@@ -161,12 +161,12 @@ export const CalculatorForm = ({ onCompute, onReset, defaults }) => {
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
                     {Object.entries(GOALS).map(([k, v]) => {
                         const selected = form.goal === k;
-                        const sign =
-                            v.adjustment > 0
-                                ? `+${(v.adjustment * 100).toFixed(0)}%`
-                                : v.adjustment < 0
-                                ? `${(v.adjustment * 100).toFixed(0)}%`
-                                : "0%";
+                        const tagline = {
+                            weight_loss: "Déficit selon bodyfat",
+                            maintenance: "Calories = TDEE",
+                            bulk: "Surplus selon bodyfat",
+                            cut: "Déficit ciblé",
+                        }[k];
                         return (
                             <button
                                 key={k}
@@ -183,7 +183,7 @@ export const CalculatorForm = ({ onCompute, onReset, defaults }) => {
                                     {v.label}
                                 </div>
                                 <div className="mt-1 font-mono text-xs text-[#E60000]">
-                                    {sign} kcal
+                                    {tagline}
                                 </div>
                             </button>
                         );

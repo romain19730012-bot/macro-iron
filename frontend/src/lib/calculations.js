@@ -132,28 +132,29 @@ export const targetBodyFatFor = (gender, currentBF, goalKey) => {
 
 /**
  * Body-fat–aware calorie adjustment (% of TDEE).
- * Tiers per the product spec.
+ * Tier boundaries are inclusive (≤) so the boundary value falls in the
+ * lighter tier — matching the product spec table.
  */
 export const calorieAdjustmentFor = (goalKey, bodyFat) => {
     const bf = bodyFat;
     if (goalKey === "weight_loss") {
         if (bf < 10) return -0.05;
-        if (bf < 15) return -0.10;
-        if (bf < 25) return -0.15;
-        if (bf < 35) return -0.20;
+        if (bf <= 15) return -0.10;
+        if (bf <= 25) return -0.15;
+        if (bf <= 35) return -0.20;
         return -0.25;
     }
     if (goalKey === "cut") {
         if (bf < 8) return -0.05;
-        if (bf < 12) return -0.07;
-        if (bf < 18) return -0.12;
-        if (bf < 25) return -0.18;
+        if (bf <= 12) return -0.07;
+        if (bf <= 18) return -0.12;
+        if (bf <= 25) return -0.18;
         return -0.22;
     }
     if (goalKey === "bulk") {
         if (bf < 10) return 0.12;
-        if (bf < 15) return 0.08;
-        if (bf < 20) return 0.05;
+        if (bf <= 15) return 0.08;
+        if (bf <= 20) return 0.05;
         return 0.02; // recomposition advised
     }
     return 0; // maintenance
@@ -406,12 +407,12 @@ export const buildTrainingPlan = (goal, sport, workouts) => {
 // `fmt` formats the displayed quantity nicely (qty in grams).
 const FOOD_DB = {
     /* Protein anchors */
-    chicken: { label: "Poulet grillé", per100: { kcal: 165, p: 31, c: 0, f: 3.5 }, min: 90, max: 350, fmt: (q) => `${q} g` },
-    turkey: { label: "Dinde grillée", per100: { kcal: 135, p: 30, c: 0, f: 1 }, min: 90, max: 350, fmt: (q) => `${q} g` },
-    leanSteak: { label: "Steak haché 5 %", per100: { kcal: 130, p: 25, c: 0, f: 5 }, min: 90, max: 300, fmt: (q) => `${q} g` },
-    salmon: { label: "Saumon", per100: { kcal: 200, p: 22, c: 0, f: 13 }, min: 90, max: 250, fmt: (q) => `${q} g` },
-    cod: { label: "Cabillaud", per100: { kcal: 80, p: 18, c: 0, f: 0.5 }, min: 100, max: 320, fmt: (q) => `${q} g` },
-    tuna: { label: "Thon", per100: { kcal: 130, p: 28, c: 0, f: 2 }, min: 80, max: 250, fmt: (q) => `${q} g` },
+    chicken: { label: "Poulet grillé", per100: { kcal: 165, p: 31, c: 0, f: 3.5 }, min: 60, max: 350, fmt: (q) => `${q} g` },
+    turkey: { label: "Dinde grillée", per100: { kcal: 135, p: 30, c: 0, f: 1 }, min: 60, max: 350, fmt: (q) => `${q} g` },
+    leanSteak: { label: "Steak haché 5 %", per100: { kcal: 130, p: 25, c: 0, f: 5 }, min: 60, max: 300, fmt: (q) => `${q} g` },
+    salmon: { label: "Saumon", per100: { kcal: 200, p: 22, c: 0, f: 13 }, min: 60, max: 250, fmt: (q) => `${q} g` },
+    cod: { label: "Cabillaud", per100: { kcal: 80, p: 18, c: 0, f: 0.5 }, min: 60, max: 320, fmt: (q) => `${q} g` },
+    tuna: { label: "Thon", per100: { kcal: 130, p: 28, c: 0, f: 2 }, min: 60, max: 250, fmt: (q) => `${q} g` },
     eggs: {
         label: "Œufs entiers",
         per100: { kcal: 155, p: 13, c: 1, f: 11 },
@@ -422,25 +423,25 @@ const FOOD_DB = {
     whey: {
         label: "Whey isolate",
         per100: { kcal: 380, p: 80, c: 5, f: 4 },
-        min: 20,
+        min: 15,
         max: 60,
-        fmt: (q) => `${q} g (${Math.round(q / 30)} dose${Math.round(q / 30) > 1 ? "s" : ""})`,
+        fmt: (q) => `${q} g (${Math.round(q / 30) || 1} dose${Math.round(q / 30) > 1 ? "s" : ""})`,
     },
-    skyr: { label: "Skyr nature", per100: { kcal: 65, p: 11, c: 4, f: 0.2 }, min: 100, max: 350, fmt: (q) => `${q} g` },
-    cottage: { label: "Fromage blanc 0 %", per100: { kcal: 50, p: 8, c: 4, f: 0 }, min: 100, max: 350, fmt: (q) => `${q} g` },
-    greekYog: { label: "Yaourt grec nature", per100: { kcal: 90, p: 8, c: 4, f: 5 }, min: 100, max: 250, fmt: (q) => `${q} g` },
+    skyr: { label: "Skyr nature", per100: { kcal: 65, p: 11, c: 4, f: 0.2 }, min: 80, max: 350, fmt: (q) => `${q} g` },
+    cottage: { label: "Fromage blanc 0 %", per100: { kcal: 50, p: 8, c: 4, f: 0 }, min: 80, max: 350, fmt: (q) => `${q} g` },
+    greekYog: { label: "Yaourt grec nature", per100: { kcal: 90, p: 8, c: 4, f: 5 }, min: 80, max: 250, fmt: (q) => `${q} g` },
 
     /* Carb anchors */
-    oats: { label: "Flocons d'avoine", per100: { kcal: 380, p: 13, c: 60, f: 7 }, min: 30, max: 130, fmt: (q) => `${q} g` },
-    rice: { label: "Riz basmati cuit", per100: { kcal: 130, p: 2.5, c: 28, f: 0.5 }, min: 80, max: 350, fmt: (q) => `${q} g` },
-    pasta: { label: "Pâtes complètes cuites", per100: { kcal: 130, p: 5, c: 25, f: 1 }, min: 80, max: 350, fmt: (q) => `${q} g` },
-    quinoa: { label: "Quinoa cuit", per100: { kcal: 120, p: 4, c: 21, f: 2 }, min: 80, max: 350, fmt: (q) => `${q} g` },
-    sweetPotato: { label: "Patate douce", per100: { kcal: 90, p: 1.6, c: 21, f: 0.1 }, min: 80, max: 400, fmt: (q) => `${q} g` },
-    potato: { label: "Pommes de terre", per100: { kcal: 80, p: 2, c: 17, f: 0.1 }, min: 80, max: 400, fmt: (q) => `${q} g` },
-    wholeBread: { label: "Pain complet", per100: { kcal: 250, p: 10, c: 45, f: 3 }, min: 30, max: 200, fmt: (q) => `${q} g` },
-    banana: { label: "Banane", per100: { kcal: 90, p: 1, c: 23, f: 0 }, min: 80, max: 250, fmt: (q) => `${q} g (~${Math.max(1, Math.round(q / 110))} fruit)` },
-    berries: { label: "Fruits rouges", per100: { kcal: 50, p: 1, c: 11, f: 0 }, min: 60, max: 250, fmt: (q) => `${q} g` },
-    apple: { label: "Pomme / fruit de saison", per100: { kcal: 55, p: 0.3, c: 14, f: 0 }, min: 80, max: 250, fmt: (q) => `${q} g (~${Math.max(1, Math.round(q / 150))} fruit)` },
+    oats: { label: "Flocons d'avoine", per100: { kcal: 380, p: 13, c: 60, f: 7 }, min: 30, max: 120, fmt: (q) => `${q} g` },
+    rice: { label: "Riz basmati cuit", per100: { kcal: 130, p: 2.5, c: 28, f: 0.5 }, min: 80, max: 700, fmt: (q) => `${q} g` },
+    pasta: { label: "Pâtes complètes cuites", per100: { kcal: 130, p: 5, c: 25, f: 1 }, min: 80, max: 700, fmt: (q) => `${q} g` },
+    quinoa: { label: "Quinoa cuit", per100: { kcal: 120, p: 4, c: 21, f: 2 }, min: 80, max: 700, fmt: (q) => `${q} g` },
+    sweetPotato: { label: "Patate douce", per100: { kcal: 90, p: 1.6, c: 21, f: 0.1 }, min: 80, max: 700, fmt: (q) => `${q} g` },
+    potato: { label: "Pommes de terre", per100: { kcal: 80, p: 2, c: 17, f: 0.1 }, min: 80, max: 700, fmt: (q) => `${q} g` },
+    wholeBread: { label: "Pain complet", per100: { kcal: 250, p: 10, c: 45, f: 3 }, min: 30, max: 300, fmt: (q) => `${q} g` },
+    banana: { label: "Banane", per100: { kcal: 90, p: 1, c: 23, f: 0 }, min: 80, max: 350, fmt: (q) => `${q} g (~${Math.max(1, Math.round(q / 110))} fruit)` },
+    berries: { label: "Fruits rouges", per100: { kcal: 50, p: 1, c: 11, f: 0 }, min: 60, max: 350, fmt: (q) => `${q} g` },
+    apple: { label: "Pomme / fruit de saison", per100: { kcal: 55, p: 0.3, c: 14, f: 0 }, min: 80, max: 350, fmt: (q) => `${q} g (~${Math.max(1, Math.round(q / 150))} fruit)` },
 
     /* Fat anchors */
     oliveOil: {
@@ -496,6 +497,46 @@ const TEMPLATES = {
     ],
 };
 
+/**
+ * Template preference per goal × slot.
+ * For restrictive goals (bulk / cut / weight_loss) we limit to the 2 most
+ * appropriate templates so anchor capacity always meets the macro target.
+ * Maintenance keeps full variety.
+ */
+const TEMPLATE_ORDER = {
+    bulk: {
+        breakfast: [0, 3],          // eggs+oats first (less P-density than whey)
+        lunch: [0, 4],
+        snack: [4, 0],
+        dinner: [3, 4],
+    },
+    weight_loss: {
+        breakfast: [1, 2],          // skyr+berries / eggs+bread+avocado
+        lunch: [3, 1],              // tuna+quinoa / turkey+sweet potato
+        snack: [3, 1],              // eggs+apple / skyr+berries
+        dinner: [0, 3],             // cod+potato / chicken+sweet potato
+    },
+    cut: {
+        breakfast: [1, 2],
+        lunch: [3, 1],
+        snack: [3, 1],
+        dinner: [0, 3],
+    },
+    maintenance: {
+        breakfast: [0, 2, 3, 1],
+        lunch: [0, 1, 2, 3, 4],
+        snack: [1, 4, 0, 2, 3],
+        dinner: [3, 4, 0, 1, 2],
+    },
+};
+
+const pickTemplate = (slot, goal, seed) => {
+    const variants = TEMPLATES[slot];
+    const order = TEMPLATE_ORDER[goal]?.[slot] || variants.map((_, i) => i);
+    const idx = order[seed % order.length];
+    return variants[idx];
+};
+
 /** Cramer's rule for a 3×3 system A·x = b */
 const solve3x3 = (a, b) => {
     const det = (m) =>
@@ -520,6 +561,142 @@ const macrosForFood = (key, qty) => {
 };
 
 const round5 = (x) => Math.max(0, Math.round(x / 5) * 5);
+
+/**
+ * After the per-meal naive solve, residual gaps can remain because of
+ * anchor clamping. We absorb the gap by redistributing the remainder across
+ * ALL 4 meals proportionally to their default share. Multiple passes close
+ * residuals as anchors hit their clamps. Deterministic, bounded.
+ */
+const redistributeShortfalls = (meals, target) => {
+    const allocations = [
+        { key: "breakfast", share: 0.25 },
+        { key: "lunch", share: 0.35 },
+        { key: "snack", share: 0.10 },
+        { key: "dinner", share: 0.30 },
+    ].map((a) => ({ ...a, idx: meals.findIndex((m) => m.key === a.key) }));
+
+    const recomputeMeal = (m) => {
+        let kcal = 0,
+            p = 0,
+            c = 0,
+            f = 0;
+        m._items.forEach((it) => {
+            const v = macrosForFood(it.key, it.qty);
+            kcal += v.kcal;
+            p += v.p;
+            c += v.c;
+            f += v.f;
+        });
+        m.kcal = Math.round(kcal);
+        m.protein = Math.round(p);
+        m.carbs = Math.round(c);
+        m.fat = Math.round(f);
+        m._raw = { p, c, f };
+    };
+
+    const onePass = () => {
+        const totals = meals.reduce(
+            (acc, m) => ({
+                p: acc.p + m._raw.p,
+                c: acc.c + m._raw.c,
+                f: acc.f + m._raw.f,
+            }),
+            { p: 0, c: 0, f: 0 }
+        );
+        const remP = target.p - totals.p;
+        const remC = target.c - totals.c;
+        const remF = target.f - totals.f;
+        if (Math.abs(remP) < 1 && Math.abs(remC) < 1 && Math.abs(remF) < 1) return;
+
+        allocations.forEach(({ idx, share }) => {
+            if (idx < 0) return;
+            const meal = meals[idx];
+            const tpl = meal._template;
+            const adjust = (key, gramDelta) => {
+                if (Math.abs(gramDelta) < 0.5) return;
+                const def = FOOD_DB[key];
+                const item = meal._items.find((it) => it.key === key);
+                if (!item) return;
+                item.qty = round5(
+                    Math.max(def.min, Math.min(def.max, item.qty + gramDelta))
+                );
+            };
+            const protDef = FOOD_DB[tpl.proteinKey].per100;
+            if (protDef.p > 0) adjust(tpl.proteinKey, (remP * share * 100) / protDef.p);
+            const carbDef = FOOD_DB[tpl.carbKey].per100;
+            if (carbDef.c > 0) adjust(tpl.carbKey, (remC * share * 100) / carbDef.c);
+            const fatDef = FOOD_DB[tpl.fatKey].per100;
+            if (fatDef.f > 0) adjust(tpl.fatKey, (remF * share * 100) / fatDef.f);
+        });
+
+        meals.forEach(recomputeMeal);
+    };
+
+    onePass();
+    onePass();
+
+    // Final corrective pass: if any single macro is OVER target by more than
+    // its tolerance, scale down whichever item across ALL meals contributes
+    // the most to that macro and still has room.
+    const tol = { p: 8, c: 12, f: 8 };
+    ["p", "c", "f"].forEach((macro) => {
+        for (let i = 0; i < 4; i++) {
+            const totals = meals.reduce(
+                (a, m) => ({
+                    p: a.p + m._raw.p,
+                    c: a.c + m._raw.c,
+                    f: a.f + m._raw.f,
+                }),
+                { p: 0, c: 0, f: 0 }
+            );
+            const over = totals[macro] - target[macro];
+            if (over <= tol[macro]) break;
+            let best = null;
+            let bestContribution = -Infinity;
+            meals.forEach((m) => {
+                m._items.forEach((item) => {
+                    const def = FOOD_DB[item.key];
+                    if (!def) return;
+                    const room = item.qty - (def.min ?? 0);
+                    if (room <= 0) return;
+                    const density = def.per100[macro] || 0;
+                    if (density <= 0) return;
+                    const contribution = (density * item.qty) / 100;
+                    if (contribution > bestContribution) {
+                        bestContribution = contribution;
+                        best = { meal: m, item, def };
+                    }
+                });
+            });
+            if (!best) break;
+            const gramDelta = (-over * 100) / best.def.per100[macro];
+            const newQty = round5(
+                Math.max(best.def.min ?? 0, Math.min(best.def.max ?? 9999, best.item.qty + gramDelta))
+            );
+            if (newQty === best.item.qty) break;
+            best.item.qty = newQty;
+            recomputeMeal(best.meal);
+        }
+    });
+
+    // Refresh display foods using the final quantities
+    meals.forEach((m) => {
+        m.foods = m._items.map((it) => {
+            const def = FOOD_DB[it.key];
+            const v = macrosForFood(it.key, it.qty);
+            return {
+                food: def.label,
+                qty: def.fmt(it.qty),
+                kcal: Math.round(v.kcal),
+                p: Math.round(v.p),
+                c: Math.round(v.c),
+                f: Math.round(v.f),
+            };
+        });
+    });
+    return meals;
+};
 
 const buildOneMeal = (slotKey, slotName, template, target) => {
     // Fixed contributions
@@ -587,6 +764,9 @@ const buildOneMeal = (slotKey, slotName, template, target) => {
         protein: Math.round(p),
         carbs: Math.round(c),
         fat: Math.round(f),
+        _items: items,
+        _template: template,
+        _raw: { p, c, f },
         foods: items.map((it) => {
             const def = FOOD_DB[it.key];
             const m = macrosForFood(it.key, it.qty);
@@ -629,14 +809,16 @@ export const buildMealPlan = (plan, profile) => {
         ) || 0;
 
     const meals = ["breakfast", "lunch", "snack", "dinner"].map((slot, i) => {
-        const variants = TEMPLATES[slot];
-        const tpl = variants[(seed + i * 3) % variants.length];
+        const tpl = pickTemplate(slot, profile.goal, seed + i * 3);
         return buildOneMeal(slot, slotName[slot], tpl, {
             p: tP * split[slot],
             c: tC * split[slot],
             f: tF * split[slot],
         });
     });
+
+    // One redistribution pass to absorb any residual macro shortfall
+    redistributeShortfalls(meals, { p: tP, c: tC, f: tF });
 
     const totals = meals.reduce(
         (acc, m) => ({

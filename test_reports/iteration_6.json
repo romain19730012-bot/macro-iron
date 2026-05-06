@@ -1,0 +1,25 @@
+{
+  "summary": "Iteration 6 — frontend precision testing for IRON CALCULATOR v4 (post iteration_5 fixes). BOTH bugs from iteration_5 are FIXED and verified. (1) calorieAdjustmentFor now uses ≤ for tier upper boundaries — boundary values (bf=15 weight_loss, bf=12/18/25 cut, bf=15 bulk) all land in the correct (lighter) tier as required by spec. (2) Goal buttons no longer show '+0% kcal' — they now display qualitative taglines: 'Déficit selon bodyfat' / 'Calories = TDEE' / 'Surplus selon bodyfat' / 'Déficit ciblé'. ALL 32 spec meal-plan combinations (2 genders × 4 goals × 4 BF tiers) pass withinTolerance (kcal ±5%/±50, P ±10g, C ±15g, F ±10g) — verified via direct Node execution of computePlan against the live calculations.js module. Calorie targets match spec EXACTLY: TDEE=2633, wl bf5/15/30/45 = [2501, 2370, 2106, 1975]; bulk bf15=2844; cut bf12=2449; cut bf18=2317; maintenance bf10=bf25=2633. UI verified live: cut bf=60 extreme → 1596 kcal target / -22% adjust / 'DANS LA TOLÉRANCE' badge / meal totals 1591 kcal (Δ-5) — no crash, no ErrorBoundary, no console errors. STORAGE_VERSION=4 with proper v3→v4 migration logic in IronCalculator.jsx restoring profile and recomputing the full plan with adjustmentPct/adjustmentKcal/warnings/mealPlan fields.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "calculations.js is now ~847 lines, exceeds the 700-line guideline. Recommend extracting FOOD_DB / TEMPLATES / TEMPLATE_ORDER / buildOneMeal / redistributeShortfalls / buildMealPlan into a separate module (e.g. lib/mealPlan.js) for maintainability. Non-blocking.",
+    "ResultDashboard.jsx Metric 'Calories cibles' note still displays the % via toFixed(0) — consistent with metric-adjustment-pct. OK.",
+    "buildMealPlan totals are computed from rounded per-meal m.kcal so withinTolerance can drift up to ±4 kcal versus precise sum; tolerance is generous enough that all 32 combos still pass. Non-blocking.",
+    "Iteration_5 reported a missing data-testid on theme-toggle — INVALID. The button has data-testid='theme-toggle-btn' (suffix). Both prior reporter and my initial script used the wrong selector. No code change needed."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (frontend-only)", "frontend": "100% — 32/32 spec combos within tolerance, all tier boundaries correct, all warnings firing per spec, qualitative taglines rendered, v3→v4 migration logic in place"},
+  "test_credentials": "n/a",
+  "seed_data_creation": "Verified all 32 spec combos via Node-level execution of computePlan against /app/frontend/src/lib/calculations.js (cjs require). UI live-verified one extreme case (cut bf=60) to confirm rendering + tolerance badge.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Both iteration_5 bugs fixed. Code-level Node verification confirms ALL spec values exactly. Theme-toggle data-testid is 'theme-toggle-btn' (with -btn suffix) — prior reports got this wrong. For UI playwright tests of mass cases, prefer driving computePlan directly (cjs require) — much faster than 32 form submissions and avoids loader/animation timing.",
+  "rca of the issue": "Iteration_5 RCA confirmed and applied. (a) calorieAdjustmentFor: every `bf < N` upper-tier comparison was changed to `bf <= N` for weight_loss / cut / bulk so boundary values bf=15 / 12 / 18 / 25 fall in the lighter tier per spec table (verified: wl bf15 → -10% / 2370, cut bf12 → -7% / 2449, cut bf18 → -12% / 2317, bulk bf15 → +8% / 2844). (b) CalculatorForm goal buttons: dropped reference to nonexistent `v.adjustment` and replaced with explicit qualitative tagline map keyed by goal id."
+}
