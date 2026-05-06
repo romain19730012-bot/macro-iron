@@ -57,6 +57,23 @@ export const ExtendedMetrics = ({ plan, profile }) => {
             testid: "metric-leanmass",
         },
         {
+            icon: <BarChart3 className="h-4 w-4" strokeWidth={1.5} />,
+            label: "Ajustement",
+            value: `${body.adjustmentPct >= 0 ? "+" : ""}${(body.adjustmentPct * 100).toFixed(0)}`,
+            unit: "%",
+            note: "Selon objectif × bodyfat",
+            accent: body.adjustmentPct !== 0,
+            testid: "metric-adjustment-pct",
+        },
+        {
+            icon: <Flame className="h-4 w-4" strokeWidth={1.5} />,
+            label: "Δ kcal",
+            value: `${body.adjustmentKcal >= 0 ? "+" : ""}${body.adjustmentKcal}`,
+            unit: "kcal",
+            note: `vs TDEE ${plan.tdee}`,
+            testid: "metric-adjustment-kcal",
+        },
+        {
             icon: <Droplet className="h-4 w-4" strokeWidth={1.5} />,
             label: "Hydratation",
             value: `${body.water}`,

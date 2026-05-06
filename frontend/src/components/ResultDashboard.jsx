@@ -6,13 +6,14 @@ import { TrainingPlan } from "./TrainingPlan";
 import { ProgressionChart } from "./ProgressionChart";
 import { CoachMode } from "./CoachMode";
 import { tipsForGoal } from "../lib/calculations";
-import { Download, RotateCcw, TrendingUp, Activity, Target, Zap } from "lucide-react";
+import { Download, RotateCcw, TrendingUp, Activity, Target, Zap, AlertTriangle, Info } from "lucide-react";
 
 export const ResultDashboard = ({ profile, plan, onRecalculate, onDownload }) => {
     if (!plan || !profile || !plan.macros || !plan.body || !plan.meta) {
         return null;
     }
     const tips = tipsForGoal(profile.goal, profile.sport);
+    const warnings = plan.warnings || [];
 
     return (
         <motion.div
@@ -54,11 +55,41 @@ export const ResultDashboard = ({ profile, plan, onRecalculate, onDownload }) =>
                     label="Calories cibles"
                     value={`${plan.targetCalories}`}
                     unit="kcal"
-                    note={plan.meta.goalLabel}
+                    note={`${plan.meta.goalLabel} · ${plan.body.adjustmentPct >= 0 ? "+" : ""}${(plan.body.adjustmentPct * 100).toFixed(0)} %`}
                     accent
                     testid="metric-target"
                 />
             </motion.div>
+
+            {/* WARNINGS */}
+            {warnings.length > 0 ? (
+                <motion.div
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4 }}
+                    data-testid="warnings-block"
+                    className="space-y-2"
+                >
+                    {warnings.map((w) => (
+                        <div
+                            key={w.key}
+                            data-testid={`warning-${w.key}`}
+                            className={`flex items-start gap-3 border px-4 py-3 text-sm ${
+                                w.severity === "warning"
+                                    ? "border-[#E60000]/50 bg-[#E60000]/10"
+                                    : "border-white/15 bg-background/40"
+                            }`}
+                        >
+                            {w.severity === "warning" ? (
+                                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-[#E60000]" strokeWidth={2} />
+                            ) : (
+                                <Info className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" strokeWidth={1.5} />
+                            )}
+                            <span className="leading-relaxed text-foreground">{w.text}</span>
+                        </div>
+                    ))}
+                </motion.div>
+            ) : null}
 
             {/* HEADLINE + CHART */}
             <motion.div

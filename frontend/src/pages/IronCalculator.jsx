@@ -10,7 +10,7 @@ import { downloadPlanPDF } from "../lib/pdf";
 import { toast } from "sonner";
 
 const STORAGE_KEY = "iron-calculator-last";
-const STORAGE_VERSION = 3;
+const STORAGE_VERSION = 4;
 
 /**
  * A plan is "complete" only if it carries all the fields the new dashboard
@@ -29,7 +29,12 @@ const isPlanComplete = (plan) =>
     typeof plan.body.bodyFat === "number" &&
     typeof plan.body.fatMass === "number" &&
     typeof plan.body.targetBodyFat === "number" &&
+    typeof plan.body.adjustmentPct === "number" &&
+    typeof plan.body.adjustmentKcal === "number" &&
     Array.isArray(plan.progression) &&
+    Array.isArray(plan.warnings) &&
+    plan.mealPlan &&
+    Array.isArray(plan.mealPlan.meals) &&
     plan.meta;
 
 const isProfileValid = (p) =>

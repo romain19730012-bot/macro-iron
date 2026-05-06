@@ -1,0 +1,46 @@
+{
+  "summary": "Iteration 5 — frontend precision testing for IRON CALCULATOR v4. 9/11 tests PASS. 2 real bugs found: tier boundaries are strict `<` causing weight_loss bf=15 and cut bf=8/12/18/25 to fall into the WRONG (next, more aggressive) tier. Test 8 (meal-plan tolerance) is actually working — visible badge reads 'DANS LA TOLÉRANCE' for all 3 cases — my Playwright script did a case-sensitive substring check against the CSS-uppercased label and falsely flagged it. All other features (bulk + warning, maintenance equality + 3 conditional warnings, protein from lean mass, fat floor 50/60, all 3 specific warnings, meal variety on weight change, prior flows, v3->v4 migration with full plan recompute, no-crash matrix 4 goals × 2 genders × extreme bf 3/60) PASS. Zero pageerrors, ErrorBoundary never visible.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "calculations.calorieAdjustmentFor",
+        "issue": "Tier boundaries use strict `<` instead of `<=`, so the boundary value falls into the NEXT (more aggressive) tier. weight_loss bf=15 → expected -10% (2410) but got -15% (2276). cut bf=8 → expected -5% (2544) but got -7% (2491); bf=12 → expected -7% (2491) got -12% (2357); bf=18 → expected -12% (2356) got -18% (2196); bf=25 → expected -18% (2196) got -22% (2089). bulk and weight_loss bf=10/30/45 happen to match because spec & boundaries align there. Fix: change every `bf < N` to `bf <= N` in calorieAdjustmentFor for weight_loss and cut tiers (per spec table provided in problem statement).",
+        "selector": "metric-target / body.adjustmentPct",
+        "priority": "HIGH"
+      },
+      {
+        "component": "CalculatorForm goal cards",
+        "issue": "Goal buttons render '0% kcal' for every goal because the code reads `v.adjustment` but GOALS objects only carry `direction`/`weeklyKg`. Cosmetic-only (does not affect calculation), but misleading: even -25% deficit goals display '0% kcal'.",
+        "selector": "[data-testid=goal-*-btn]",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "header",
+        "issues": ["Header has fixed position but main content has no top-padding -> 'CALCULER' link/theme toggle may be data-testid='header-calc-btn' is hidden via class 'hidden ... sm:inline-flex'. theme-toggle has data-testid='theme-toggle' but my locator returned count=0 — toggle present visually (sun icon at top-right of screenshot) but its testid attribute appears to be missing on the header instance. Confirm by adding data-testid='theme-toggle' to the rendered ThemeToggle button."]
+      }
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "FIX HIGH: In /app/frontend/src/lib/calculations.js calorieAdjustmentFor, change all `bf < N` thresholds to `bf <= N` for weight_loss and cut tiers so boundary values land in the correct (lighter) tier as specified.",
+    "FIX MEDIUM: In /app/frontend/src/components/CalculatorForm.jsx goal buttons, replace `v.adjustment` with the bf-aware tier or just drop the static % display (it is now bodyfat-dependent and cannot be precomputed).",
+    "VERIFY: data-testid='theme-toggle' should be present on the header theme-toggle button (Playwright found 0 matches)."
+  ],
+  "critical_code_review_comments": [
+    "calorieAdjustmentFor uses strict `<` for tier thresholds, but the product spec exact-value table implies the boundary value belongs to the lighter tier. Use `<=` consistently.",
+    "GOALS object dropped its `adjustment` field but CalculatorForm still references `v.adjustment` -> always renders '0%'. Dead reference.",
+    "buildMealPlan totals are computed from rounded per-meal m.kcal so withinTolerance can drift up to ±4 kcal versus the precise sum; non-blocking but worth noting.",
+    "calculations.js is now ~666 lines — close to the 700-line guideline. Consider splitting FOOD_DB / TEMPLATES / buildMealPlan into a separate module (e.g. lib/mealPlan.js)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (skipped)", "frontend": "82% (9/11 functional tests; 2 boundary failures, 1 cosmetic)"},
+  "seed_data_creation": "v3 storage pre-seeded via localStorage to validate v3->v4 migration path; fully recomputed and persisted as version=4 with adjustmentPct/adjustmentKcal/warnings/mealPlan populated.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "After main agent fixes the `<` → `<=` boundary issue in calorieAdjustmentFor, re-run weight_loss bf=15 (must give 2410), cut bf=8/12/18/25 (must give 2544/2491/2356/2196). Tests 3,4,5,6,7,9,10,11 already PASS. For test 8, when checking [data-testid=meal-plan-tolerance] inner_text, do a case-insensitive contains for 'tolérance' — the label is CSS-uppercased to 'DANS LA TOLÉRANCE'.",
+  "rca of the issue": "ROOT CAUSE: In /app/frontend/src/lib/calculations.js `calorieAdjustmentFor`, the JavaScript comparison `if (bf < 15) return -0.10` excludes the exact-boundary value bf=15, pushing it into the next tier (-15%). Same pattern for cut goal at bf=8/12/18/25. REPRODUCTION: profile male/28/178/75/active/weight_loss/4 workouts, bf=15 → metric-target shows 2276 (TDEE 2678 × 0.85 = -15%) instead of expected 2410 (-10%). MITIGATION: replace `<` with `<=` in tier comparisons OR shift threshold values by 1 (e.g. `< 16` to include bf=15 in -10% tier). The `<=` fix is preferred to match the spec table semantics."
+}

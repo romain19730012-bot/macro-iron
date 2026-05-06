@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
-import { buildMealPlan } from "../lib/calculations";
-import { Coffee, Sun, Apple, Moon } from "lucide-react";
+import { Coffee, Sun, Apple, Moon, CheckCircle2, AlertCircle } from "lucide-react";
 
 const ICONS = {
     breakfast: Coffee,
@@ -10,8 +9,8 @@ const ICONS = {
 };
 
 export const MealPlan = ({ plan }) => {
-    if (!plan?.macros || typeof plan.targetCalories !== "number") return null;
-    const meals = buildMealPlan(plan);
+    if (!plan?.macros || !plan?.mealPlan?.meals) return null;
+    const { meals, totals, target, deltas, withinTolerance } = plan.mealPlan;
 
     return (
         <motion.section
@@ -33,10 +32,12 @@ export const MealPlan = ({ plan }) => {
                     Une journée type pour ton objectif
                 </h3>
                 <p className="mt-2 max-w-xl text-sm text-muted-foreground">
-                    Adapté pour <span className="text-foreground">{plan.meta.goalLabel.toLowerCase()}</span> · {plan.targetCalories} kcal · {plan.macros.protein.grams} P / {plan.macros.carbs.grams} G / {plan.macros.fat.grams} L (g)
+                    Adapté pour <span className="text-foreground">{plan.meta.goalLabel.toLowerCase()}</span> ·{" "}
+                    {target.kcal} kcal cibles · {target.p} P / {target.c} G / {target.f} L (g)
                 </p>
             </div>
 
+            {/* Meals */}
             <div className="grid grid-cols-1 gap-px border border-white/10 bg-white/10 md:grid-cols-2">
                 {meals.map((m, idx) => {
                     const Icon = ICONS[m.key];
@@ -50,7 +51,6 @@ export const MealPlan = ({ plan }) => {
                             data-testid={`meal-${m.key}`}
                             className="group relative overflow-hidden bg-card p-6 transition-colors hover:bg-[#1A1A1A] md:p-8"
                         >
-                            {/* Accent line on hover */}
                             <div className="absolute left-0 top-0 h-full w-0.5 origin-top scale-y-0 bg-[#E60000] transition-transform duration-300 group-hover:scale-y-100" />
 
                             <div className="flex items-start justify-between gap-4">
@@ -87,11 +87,14 @@ export const MealPlan = ({ plan }) => {
                                 {m.foods.map((f, i) => (
                                     <li
                                         key={i}
-                                        className="flex items-center justify-between border-b border-white/5 pb-2 text-sm"
+                                        className="flex items-center justify-between gap-3 border-b border-white/5 pb-2 text-sm"
                                     >
-                                        <span className="text-foreground">{f.food}</span>
+                                        <span className="flex-1 truncate text-foreground">{f.food}</span>
                                         <span className="font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground">
                                             {f.qty}
+                                        </span>
+                                        <span className="ml-3 hidden font-mono text-[10px] tracking-wider text-[#E60000] sm:inline-block">
+                                            {f.kcal} kcal
                                         </span>
                                     </li>
                                 ))}
@@ -100,20 +103,125 @@ export const MealPlan = ({ plan }) => {
                     );
                 })}
             </div>
+
+            {/* TOTAL DU PLAN */}
+            <div
+                data-testid="meal-plan-total"
+                className="border border-white/10 bg-card p-6 md:p-8"
+            >
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                        <div className="flex items-center gap-3">
+                            <span className="h-px w-10 bg-[#E60000]" />
+                            <span className="text-xs font-bold uppercase tracking-[0.3em] text-[#E60000]">
+                                Total du plan alimentaire
+                            </span>
+                        </div>
+                        <h4 className="mt-3 font-heading text-3xl uppercase tracking-tight text-foreground">
+                            Vérification cible vs réel
+                        </h4>
+                    </div>
+                    <div
+                        className={`flex items-center gap-2 border px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.25em] ${
+                            withinTolerance
+                                ? "border-[#E60000]/40 bg-[#E60000]/10 text-[#E60000]"
+                                : "border-yellow-500/40 bg-yellow-500/5 text-yellow-500"
+                        }`}
+                        data-testid="meal-plan-tolerance"
+                    >
+                        {withinTolerance ? (
+                            <CheckCircle2 className="h-3.5 w-3.5" strokeWidth={2} />
+                        ) : (
+                            <AlertCircle className="h-3.5 w-3.5" strokeWidth={2} />
+                        )}
+                        {withinTolerance ? "Dans la tolérance" : "Léger écart"}
+                    </div>
+                </div>
+
+                <div className="mt-6 grid grid-cols-2 gap-px border border-white/10 bg-white/10 md:grid-cols-4">
+                    <TotalCell
+                        label="Calories"
+                        actual={totals.kcal}
+                        target={target.kcal}
+                        delta={deltas.kcal}
+                        unit="kcal"
+                        testid="total-kcal"
+                    />
+                    <TotalCell
+                        label="Protéines"
+                        actual={totals.p}
+                        target={target.p}
+                        delta={deltas.p}
+                        unit="g"
+                        testid="total-p"
+                        accent="#E60000"
+                    />
+                    <TotalCell
+                        label="Glucides"
+                        actual={totals.c}
+                        target={target.c}
+                        delta={deltas.c}
+                        unit="g"
+                        testid="total-c"
+                        accent="#FFFFFF"
+                    />
+                    <TotalCell
+                        label="Lipides"
+                        actual={totals.f}
+                        target={target.f}
+                        delta={deltas.f}
+                        unit="g"
+                        testid="total-f"
+                        accent="#666666"
+                    />
+                </div>
+            </div>
         </motion.section>
     );
 };
 
 const MacroPill = ({ label, value, color }) => (
     <div className="flex items-center justify-center gap-2 bg-card px-3 py-2">
-        <span
-            className="h-2 w-2 shrink-0"
-            style={{ backgroundColor: color }}
-            aria-hidden
-        />
-        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
-            {label}
-        </span>
+        <span className="h-2 w-2 shrink-0" style={{ backgroundColor: color }} aria-hidden />
+        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">{label}</span>
         <span className="font-mono text-xs text-foreground">{value} g</span>
     </div>
 );
+
+const TotalCell = ({ label, actual, target, delta, unit, testid, accent }) => {
+    const sign = delta > 0 ? "+" : "";
+    return (
+        <div className="bg-card p-5" data-testid={testid}>
+            <div className="flex items-center gap-2">
+                {accent ? (
+                    <span className="h-2 w-2 shrink-0" style={{ backgroundColor: accent }} aria-hidden />
+                ) : null}
+                <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
+                    {label}
+                </span>
+            </div>
+            <div className="mt-3 flex items-baseline gap-2">
+                <span className="font-heading text-3xl uppercase tracking-tight text-foreground">
+                    {actual}
+                </span>
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                    {unit}
+                </span>
+            </div>
+            <div className="mt-1 flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.15em] text-muted-foreground">
+                <span>cible {target}</span>
+                <span
+                    className={
+                        delta === 0
+                            ? "text-muted-foreground"
+                            : Math.abs(delta) <= (unit === "kcal" ? Math.max(50, target * 0.05) : 15)
+                            ? "text-[#E60000]"
+                            : "text-yellow-500"
+                    }
+                >
+                    Δ {sign}{delta}
+                </span>
+            </div>
+        </div>
+    );
+};
