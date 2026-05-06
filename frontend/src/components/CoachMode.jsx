@@ -2,24 +2,46 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Crown, Mail, Sparkles, Download, ArrowRight, Check } from "lucide-react";
 import { toast } from "sonner";
+import { sendEmailPlan } from "../lib/email";
 
-export const CoachMode = ({ onDownloadPDF }) => {
+export const CoachMode = ({ onDownloadPDF, profile, plan }) => {
     const [email, setEmail] = useState("");
     const [submitted, setSubmitted] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
 
-    const submitEmail = (e) => {
+    const submitEmail = async (e) => {
         e.preventDefault();
-        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        if (submitting) return;
+
+        const trimmed = email.trim();
+        if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
             toast.error("Email invalide", {
                 description: "Renseigne un email valide pour recevoir ton plan.",
             });
             return;
         }
-        // MOCK: aucun backend pour l'instant
-        setSubmitted(true);
-        toast.success("Inscription enregistrée", {
-            description: "Ton plan te sera envoyé dès l'activation du service.",
-        });
+        setSubmitting(true);
+        try {
+            const res = await sendEmailPlan(trimmed, { profile, plan });
+            if (res.status === "invalid") {
+                toast.error("Email invalide", { description: res.message });
+                return;
+            }
+            setSubmitted(true);
+            // Honest UX: never claim the email was actually sent until a
+            // backend is connected. Status returned here is "queued".
+            toast.success("Email enregistré", {
+                description: res.message,
+            });
+        } catch (err) {
+            // eslint-disable-next-line no-console
+            console.error("[CoachMode] sendEmailPlan failed:", err);
+            toast.error("Erreur inattendue", {
+                description: "Réessaie dans un instant.",
+            });
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     return (
@@ -119,12 +141,12 @@ export const CoachMode = ({ onDownloadPDF }) => {
                                 {submitted ? (
                                     <div
                                         data-testid="coach-email-success"
-                                        className="mt-5 flex items-center gap-3 border border-[#E60000]/40 bg-[#E60000]/10 px-4 py-3 text-sm text-white"
+                                        className="mt-5 flex items-start gap-3 border border-[#E60000]/40 bg-[#E60000]/10 px-4 py-3 text-sm text-white"
                                     >
-                                        <Check className="h-4 w-4 text-[#E60000]" strokeWidth={2.5} />
+                                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#E60000]" strokeWidth={2.5} />
                                         <span>
-                                            Merci. Ton plan sera envoyé à{" "}
-                                            <span className="font-mono">{email}</span>.
+                                            <span className="font-mono">{email}</span> — Email enregistré.
+                                            L'envoi automatique sera activé prochainement.
                                         </span>
                                     </div>
                                 ) : (
@@ -136,15 +158,19 @@ export const CoachMode = ({ onDownloadPDF }) => {
                                             onChange={(e) => setEmail(e.target.value)}
                                             placeholder="ton@email.com"
                                             data-testid="coach-email-input"
-                                            className="flex-1 border border-white/15 bg-black/40 px-4 py-3 font-mono text-sm text-white placeholder:text-gray-600 focus:border-[#E60000] focus:outline-none"
+                                            disabled={submitting}
+                                            className="flex-1 border border-white/15 bg-black/40 px-4 py-3 font-mono text-sm text-white placeholder:text-gray-600 focus:border-[#E60000] focus:outline-none disabled:opacity-60"
                                         />
                                         <button
                                             type="submit"
                                             data-testid="coach-email-submit"
-                                            className="inline-flex items-center justify-center gap-2 bg-[#E60000] px-6 py-3 font-heading text-base uppercase tracking-wider text-white transition-colors hover:bg-[#FF1A1A]"
+                                            disabled={submitting}
+                                            className="inline-flex items-center justify-center gap-2 bg-[#E60000] px-6 py-3 font-heading text-base uppercase tracking-wider text-white transition-colors hover:bg-[#FF1A1A] disabled:opacity-60"
                                         >
-                                            Envoyer
-                                            <ArrowRight className="h-4 w-4" strokeWidth={2} />
+                                            {submitting ? "Enregistrement…" : "Envoyer"}
+                                            {submitting ? null : (
+                                                <ArrowRight className="h-4 w-4" strokeWidth={2} />
+                                            )}
                                         </button>
                                     </div>
                                 )}

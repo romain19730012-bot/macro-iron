@@ -243,7 +243,7 @@ export const ResultDashboard = ({ profile, plan, onRecalculate, onDownload }) =>
             </motion.div>
 
             {/* COACH MODE */}
-            <CoachMode onDownloadPDF={onDownload} />
+            <CoachMode onDownloadPDF={onDownload} profile={profile} plan={plan} />
         </motion.div>
     );
 };

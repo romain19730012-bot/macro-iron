@@ -148,11 +148,25 @@ export default function IronCalculator({ theme, toggleTheme }) {
     };
 
     const handleDownload = () => {
-        if (!profile || !plan) return;
-        downloadPlanPDF(profile, plan);
-        toast.success("PDF Premium téléchargé", {
-            description: "3 pages: dashboard, plan repas, recommandations",
-        });
+        if (!profile || !plan) {
+            toast.error("Aucun plan à exporter", {
+                description: "Calcule d'abord ton plan avant de télécharger.",
+            });
+            return;
+        }
+        try {
+            downloadPlanPDF(profile, plan);
+            toast.success("PDF Premium téléchargé", {
+                description: "3 pages : dashboard, plan repas, recommandations",
+            });
+        } catch (err) {
+            // eslint-disable-next-line no-console
+            console.error("[IronCalculator] PDF export failed:", err);
+            toast.error("Échec du téléchargement", {
+                description:
+                    "Une erreur est survenue. Recalcule ton plan puis réessaie.",
+            });
+        }
     };
 
     const scrollToForm = () => {
