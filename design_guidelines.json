@@ -1,0 +1,118 @@
+{
+  "project_name": "IRON CALCULATOR",
+  "theme": "dark",
+  "archetype": "Performance Pro (Elite Athleticism & Precision)",
+  "design_philosophy": {
+    "emotion": "Discipline, Power, Focus",
+    "principles": [
+      "Tactical Minimalism: Replace soft shadows with 1px solid strokes or inner glow highlights.",
+      "High-Visibility: Command-center focus, utilizing Deep Obsidian anchor with Electric Red triggers.",
+      "Data Density: Modular bento-grid layouts for performance metrics to mimic pro sports dashboards."
+    ]
+  },
+  "colors": {
+    "background": {
+      "default": "#0A0A0A",
+      "surface": "#141414",
+      "surface_hover": "#1A1A1A"
+    },
+    "text": {
+      "primary": "#FFFFFF",
+      "secondary": "#A0A0A0",
+      "muted": "#707070"
+    },
+    "primary": {
+      "default": "#E60000",
+      "hover": "#FF1A1A",
+      "active": "#CC0000",
+      "foreground": "#FFFFFF"
+    },
+    "border": {
+      "default": "rgba(255, 255, 255, 0.1)",
+      "focus": "rgba(230, 0, 0, 0.5)"
+    },
+    "chart": {
+      "protein": "#E60000",
+      "carbs": "#FFFFFF",
+      "fats": "#404040"
+    }
+  },
+  "typography": {
+    "font_families": {
+      "heading": "Bebas Neue, sans-serif",
+      "body": "Inter, sans-serif",
+      "mono": "JetBrains Mono, monospace"
+    },
+    "rules": {
+      "h1": "text-5xl md:text-6xl tracking-tighter uppercase",
+      "h2": "text-3xl md:text-4xl tracking-tight uppercase",
+      "h3": "text-xl md:text-2xl tracking-tight uppercase",
+      "body": "text-base leading-relaxed text-gray-400",
+      "labels": "text-xs font-bold tracking-[0.2em] uppercase text-gray-500"
+    }
+  },
+  "layout_and_spacing": {
+    "spacing_scale": "Tailwind standard (p-4, p-6, p-8, p-12). Use generous spacing around macro sections.",
+    "container": "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
+    "grid_strategy": {
+      "form": "grid-cols-1 md:grid-cols-2 gap-6",
+      "results": "grid-cols-1 md:grid-cols-3 gap-6 (Control Room Grid - Dense and actionable)"
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-[#E60000] text-white hover:bg-[#FF1A1A] font-heading text-xl uppercase tracking-wider rounded-none border border-transparent transition-all",
+      "secondary": "bg-transparent text-white border border-white/20 hover:border-white/50 font-heading text-xl uppercase tracking-wider rounded-none transition-all"
+    },
+    "cards": {
+      "style": "bg-[#141414] border border-white/10 rounded-none p-6 md:p-8 relative overflow-hidden",
+      "hover_effect": "hover:border-white/30 transition-colors"
+    },
+    "inputs": {
+      "style": "bg-[#0A0A0A] border-b border-white/20 rounded-none px-4 py-3 text-white focus:border-[#E60000] focus:ring-0 transition-colors placeholder:text-gray-600"
+    },
+    "surface_effects": [
+      "The 'Technical' Look: Grid borders visible. Data-heavy sections should feel like a skeletal grid.",
+      "Minimal Glass: Use backdrop-blur sparingly, only for sticky headers. bg-black/80 backdrop-blur-xl border-b border-white/10."
+    ]
+  },
+  "media": {
+    "images": [
+      {
+        "category": "hero_background",
+        "url": "https://images.unsplash.com/photo-1709315957145-a4bad1feef28?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTF8MHwxfHNlYXJjaHwzfHxkYXJrJTIwZml0bmVzcyUyMHRyYWluaW5nJTIwYXRobGV0ZXxlbnwwfHx8fDE3NzgwOTQwMTN8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Dark, moody gym shot of a man lifting a barbell. Apply heavy black overlay (bg-black/70) so text is highly legible.",
+        "usage": "Hero section background with parallax or subtle zoom effect."
+      }
+    ],
+    "icons": {
+      "library": "lucide-react",
+      "style": "Sharp, 1.5px stroke width. Use red accent for key metric icons."
+    }
+  },
+  "motion_and_interactions": {
+    "hover_states": "Buttons and interactive cards must have noticeable hover states (border glow or color shift).",
+    "transitions": "Fast and snappy. 150ms ease-out. No slow, sluggish fades.",
+    "entrance": "Staggered fade-up for form fields and result widgets."
+  },
+  "technical_requirements": {
+    "frameworks": ["React", "Tailwind CSS", "Framer Motion", "Recharts (for Macros Donut/Bar chart)"],
+    "components_library": "Shadcn UI (heavily customized to remove rounded corners and soft shadows)",
+    "accessibility": "Ensure all form inputs have proper labels. Maintain 4.5:1 contrast for text.",
+    "testing": "Add data-testid to all interactive elements (e.g., data-testid='calculate-btn')."
+  },
+  "instructions_to_main_agent": [
+    "Build a single-page React application.",
+    "Implement the 'IRON CALCULATOR' hero section with the provided unsplash background image and heavy black overlay.",
+    "Create the user profile form (gender, age, height, weight, activity level, goal, workouts/week). Use sharp, squared-off inputs.",
+    "Calculate BMR using Mifflin-St Jeor, then TDEE, then adjust based on goals (Cut -20%, Maintain 0%, Bulk +10/15%).",
+    "Calculate Macros: Protein 2g/kg, Fat 0.9g/kg, Carbs fill the rest of the calories.",
+    "Display results in a 'Control Room' style dashboard. Big typography for total calories.",
+    "Implement a Recharts donut or bar chart for the macro split using the specified chart colors.",
+    "Include personalized nutrition tips based on the selected goal.",
+    "Add 'Recalculate' and 'Download PDF' buttons.",
+    "Implement light/dark theme toggle, but default to DARK mode.",
+    "Use LocalStorage to save the last calculated result.",
+    "Ensure the UI uses 'Bebas Neue' for big, impactful headings and 'Inter' for readable body text. Add the Google Fonts import to the index.html or css."
+  ]
+}
