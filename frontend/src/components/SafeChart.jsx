@@ -23,11 +23,25 @@ export const SafeChart = ({ children, minHeight = 220, className = "" }) => {
         if (!node) return undefined;
 
         let rafId = 0;
+        let cancelled = false;
+
+        const settle = () => {
+            // Two extra rAFs after first non-zero measurement → guarantees
+            // the inner ResponsiveContainer has finished its own measurement
+            // pass and never sees a zero-width parent.
+            requestAnimationFrame(() => {
+                if (cancelled) return;
+                requestAnimationFrame(() => {
+                    if (!cancelled) setReady(true);
+                });
+            });
+        };
+
         const check = () => {
-            if (!ref.current) return;
+            if (cancelled || !ref.current) return;
             const { width, height } = ref.current.getBoundingClientRect();
-            if (width > 0 && height > 0) {
-                setReady(true);
+            if (width > 1 && height > 1) {
+                settle();
                 return;
             }
             rafId = requestAnimationFrame(check);
@@ -36,8 +50,8 @@ export const SafeChart = ({ children, minHeight = 220, className = "" }) => {
         const ro = new ResizeObserver((entries) => {
             for (const entry of entries) {
                 const { width, height } = entry.contentRect;
-                if (width > 0 && height > 0) {
-                    setReady(true);
+                if (width > 1 && height > 1) {
+                    settle();
                 }
             }
         });
@@ -45,6 +59,7 @@ export const SafeChart = ({ children, minHeight = 220, className = "" }) => {
         rafId = requestAnimationFrame(check);
 
         return () => {
+            cancelled = true;
             cancelAnimationFrame(rafId);
             ro.disconnect();
         };
