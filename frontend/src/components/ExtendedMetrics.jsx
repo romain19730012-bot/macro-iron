@@ -1,5 +1,16 @@
 import { motion } from "framer-motion";
-import { Activity, Droplet, Percent, Scale, Target, Timer, Weight, BarChart3 } from "lucide-react";
+import {
+    Activity,
+    Droplet,
+    Percent,
+    Scale,
+    Target,
+    Timer,
+    Weight,
+    Flame,
+    BarChart3,
+    Info,
+} from "lucide-react";
 
 const item = {
     hidden: { opacity: 0, y: 16 },
@@ -9,6 +20,8 @@ const item = {
 export const ExtendedMetrics = ({ plan, profile }) => {
     if (!plan?.body || !profile) return null;
     const { body } = plan;
+    const isInput = body.bodyFatSource === "input";
+
     const cards = [
         {
             icon: <Scale className="h-4 w-4" strokeWidth={1.5} />,
@@ -19,20 +32,29 @@ export const ExtendedMetrics = ({ plan, profile }) => {
             testid: "metric-bmi",
         },
         {
-            icon: <Activity className="h-4 w-4" strokeWidth={1.5} />,
-            label: "Masse maigre",
-            value: `${body.leanMass}`,
-            unit: "kg",
-            note: "Estimation Boer",
-            testid: "metric-leanmass",
-        },
-        {
             icon: <Percent className="h-4 w-4" strokeWidth={1.5} />,
-            label: "Bodyfat estimé",
+            label: isInput ? "Masse grasse" : "Masse grasse estimée",
             value: `${body.bodyFat}`,
             unit: "%",
-            note: "Deurenberg",
+            note: isInput ? "Renseigné" : "Estimation Deurenberg",
+            accent: isInput,
             testid: "metric-bodyfat",
+        },
+        {
+            icon: <Flame className="h-4 w-4" strokeWidth={1.5} />,
+            label: "Masse grasse",
+            value: `${body.fatMass}`,
+            unit: "kg",
+            note: `${body.bodyFat} % × ${profile.weight} kg`,
+            testid: "metric-fatmass",
+        },
+        {
+            icon: <Activity className="h-4 w-4" strokeWidth={1.5} />,
+            label: "Masse maigre",
+            value: `${body.leanMassReal ?? body.leanMass}`,
+            unit: "kg",
+            note: isInput ? "Calculée du poids - graisse" : "Estimation Boer",
+            testid: "metric-leanmass",
         },
         {
             icon: <Droplet className="h-4 w-4" strokeWidth={1.5} />,
@@ -50,6 +72,14 @@ export const ExtendedMetrics = ({ plan, profile }) => {
             note: plan.meta.goalLabel,
             accent: true,
             testid: "metric-target-weight",
+        },
+        {
+            icon: <Percent className="h-4 w-4" strokeWidth={1.5} />,
+            label: "BF cible",
+            value: `${body.targetBodyFat ?? "—"}`,
+            unit: "%",
+            note: `${body.targetFatMass ?? "—"} kg de graisse`,
+            testid: "metric-target-bodyfat",
         },
         {
             icon: <Timer className="h-4 w-4" strokeWidth={1.5} />,
@@ -96,16 +126,36 @@ export const ExtendedMetrics = ({ plan, profile }) => {
                 Tableau de bord complet
             </h3>
 
+            {/* Source banner */}
+            <div
+                data-testid="bf-source-banner"
+                className={`flex items-start gap-3 border px-4 py-3 ${
+                    isInput
+                        ? "border-[#E60000]/40 bg-[#E60000]/10"
+                        : "border-white/15 bg-background/40"
+                }`}
+            >
+                <Info
+                    className={`mt-0.5 h-4 w-4 shrink-0 ${
+                        isInput ? "text-[#E60000]" : "text-muted-foreground"
+                    }`}
+                    strokeWidth={1.5}
+                />
+                <span className="text-xs leading-relaxed text-foreground">
+                    {isInput
+                        ? "Calcul basé sur ton taux de masse grasse renseigné — précision optimale."
+                        : "Taux de masse grasse estimé automatiquement, résultat indicatif. Pour un calcul plus précis, renseigne ton taux."}
+                </span>
+            </div>
+
             <div className="grid grid-cols-2 gap-px border border-white/10 bg-white/10 sm:grid-cols-3 lg:grid-cols-4">
                 {cards.map((c) => (
                     <motion.div
-                        key={c.label}
+                        key={c.testid}
                         variants={item}
                         transition={{ duration: 0.4, ease: "easeOut" }}
                         data-testid={c.testid}
-                        className={`group relative bg-card p-6 transition-colors hover:bg-[#1A1A1A] ${
-                            c.accent ? "" : ""
-                        }`}
+                        className="group relative bg-card p-6 transition-colors hover:bg-[#1A1A1A]"
                     >
                         {c.accent ? (
                             <div className="absolute left-0 top-0 h-0.5 w-full bg-[#E60000]" />

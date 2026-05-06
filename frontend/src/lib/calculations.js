@@ -73,6 +73,28 @@ export const computeBodyFat = (gender, weightKg, heightCm, age) => {
     return +Math.max(3, bf).toFixed(1);
 };
 
+/** Hard clamp on body-fat input (defensive against absurd values) */
+export const clampBodyFat = (raw) => {
+    const n = Number(raw);
+    if (!Number.isFinite(n)) return null;
+    return +Math.max(3, Math.min(60, n)).toFixed(1);
+};
+
+/** Recommended target body-fat % per goal (men reference, +6 for women) */
+export const targetBodyFatFor = (gender, currentBF, goalKey) => {
+    const isMale = gender === "male";
+    const floor = isMale ? 8 : 16;   // realistic athletic floor
+    const cutFloor = isMale ? 10 : 18;
+    const bulkCeil = isMale ? 18 : 26;
+
+    let target = currentBF;
+    if (goalKey === "weight_loss") target = Math.max(currentBF - 4, floor + 4);
+    else if (goalKey === "cut") target = Math.max(currentBF - 6, cutFloor);
+    else if (goalKey === "bulk") target = Math.min(currentBF + 2, bulkCeil);
+    // maintenance: unchanged
+    return +target.toFixed(1);
+};
+
 /** Besoin hydrique journalier (litres) */
 export const computeWaterNeeds = (weightKg, workoutsPerWeek) => {
     const baseMl = 35 * weightKg;
@@ -137,7 +159,37 @@ export const computePlan = (profile) => {
     const adjustment = GOALS[goal].adjustment;
     const targetCalories = tdee * (1 + adjustment);
 
-    const proteinG = +(2 * weight).toFixed(0);
+    /* ---------- Body composition (precision-aware) ---------- */
+    // Determine effective body-fat % and source
+    const inputBF = profile.bodyFatKnown ? clampBodyFat(profile.bodyFatInput) : null;
+    const estimatedBF = computeBodyFat(gender, weight, height, age);
+    const bodyFat = inputBF ?? estimatedBF;
+    const bodyFatSource = inputBF != null ? "input" : "estimated";
+
+    // Real lean / fat mass derived from chosen body-fat
+    const fatMass = +((weight * bodyFat) / 100).toFixed(1);
+    const leanMassReal = +(weight - fatMass).toFixed(1);
+    // Boer formula kept as "anatomical" reference (used in PDF & comparison)
+    const leanMassBoer = computeLeanMass(gender, weight, height);
+
+    // Target body-fat & derived target masses
+    const targetBodyFat = targetBodyFatFor(gender, bodyFat, goal);
+    const targetWeight = computeTargetWeight(gender, weight, height, goal);
+    const targetFatMass = +((targetWeight * targetBodyFat) / 100).toFixed(1);
+    const targetLeanMass = +(targetWeight - targetFatMass).toFixed(1);
+
+    /* ---------- Macros ---------- */
+    // When user knows their BF, compute protein from lean mass (2.4 g/kg LBM)
+    // and clamp to a sport-nutrition safe range (1.6 – 3.0 g/kg total weight).
+    let proteinG;
+    if (bodyFatSource === "input") {
+        const fromLean = 2.4 * leanMassReal;
+        const minP = 1.6 * weight;
+        const maxP = 3.0 * weight;
+        proteinG = +Math.round(Math.max(minP, Math.min(maxP, fromLean))).toFixed(0);
+    } else {
+        proteinG = +(2 * weight).toFixed(0);
+    }
     const fatG = +(0.9 * weight).toFixed(0);
     const proteinKcal = proteinG * 4;
     const fatKcal = fatG * 9;
@@ -145,12 +197,9 @@ export const computePlan = (profile) => {
     const carbsG = +(remainingKcal / 4).toFixed(0);
     const carbsKcal = carbsG * 4;
 
-    // Extended metrics
+    /* ---------- Other metrics ---------- */
     const bmi = computeBMI(weight, height);
-    const leanMass = computeLeanMass(gender, weight, height);
-    const bodyFat = computeBodyFat(gender, weight, height, age);
     const water = computeWaterNeeds(weight, workouts);
-    const targetWeight = computeTargetWeight(gender, weight, height, goal);
     const weeksToGoal = computeWeeksToGoal(weight, targetWeight, goal);
     const progression = buildProgressionCurve(weight, targetWeight, weeksToGoal);
 
@@ -166,10 +215,18 @@ export const computePlan = (profile) => {
         body: {
             bmi,
             bmiCategory: bmiCategory(bmi),
-            leanMass,
+            // legacy field kept (Boer estimation) for backward compatibility
+            leanMass: leanMassBoer,
+            // new precision fields
             bodyFat,
+            bodyFatSource, // "input" | "estimated"
+            fatMass,
+            leanMassReal,
             water,
             targetWeight,
+            targetBodyFat,
+            targetFatMass,
+            targetLeanMass,
             weeksToGoal,
         },
         progression,
@@ -192,21 +249,25 @@ export const tipsForGoal = (goal, sport) => {
             "Cible un déficit modéré : pèse-toi 1×/semaine, pas tous les jours.",
             "Augmente les protéines à 2.2 g/kg si la faim devient un frein.",
             "Garde au moins 50 g de lipides/jour pour les hormones.",
+            "Vise une perte progressive en conservant ta masse maigre — la balance ne suffit pas.",
         ],
         maintenance: [
             "Surveille tes performances en salle : c'est le meilleur indicateur.",
             "Adapte légèrement tes glucides selon les jours d'entraînement.",
             "Mange varié : 30 plantes différentes/semaine pour le microbiote.",
+            "Stabilise ton poids ET ta composition corporelle, pas seulement la balance.",
         ],
         bulk: [
             "Privilégie une prise de masse propre : +0,3 kg/semaine maximum.",
             "Ajoute 30 g de glucides post-training pour optimiser la recharge.",
             "Ne néglige pas les légumes — la digestion détermine l'assimilation.",
+            "Surveille ton taux de gras : limite la prise de masse grasse pour faciliter la sèche.",
         ],
         cut: [
             "Maintiens des protéines hautes pour préserver ta masse musculaire.",
             "Concentre les glucides autour de l'entraînement.",
             "Intègre 2-3 séances de cardio modéré par semaine.",
+            "Vise une baisse précise du taux de masse grasse — re-mesure tous les 15 jours.",
         ],
     };
     const sportSpecific = {
