@@ -41,3 +41,18 @@ Application web moderne de calculateur de calories pour sportifs (FR), pure fron
 ## Next Tasks
 - Recueillir feedback utilisateur sur le PDF
 - Considérer un mode coach (multiple profiles)
+
+## Premium Upgrade — 06/05/2026
+- Framer Motion installed and used for entrance, stagger, scroll animations
+- LoadingScreen "AI Nutrition Engine" (1.4s, 6 steps with progress bar + scanline)
+- Extended body metrics: IMC + catégorie, masse maigre (Boer), bodyfat (Deurenberg), eau (35ml/kg + 500ml/séance/7), poids cible, semaines pour objectif, niveau perf
+- ProgressionChart (Recharts AreaChart) avec courbe non-linéaire 0→8 semaines
+- MealPlan: 4 repas (breakfast/lunch/snack/dinner) avec aliments + quantités + macros par repas (25/35/10/30)
+- TrainingPlan: fréquence, cardio, sommeil, hydratation, timing protéines, récupération
+- CoachMode: PDF premium, formulaire email mock, CTA coaching (effet SaaS)
+- PDF Premium 3 pages: dashboard + plan repas + recommandations & conseils
+- 100% test pass (testing_agent_v3 iteration_2)
+
+## MOCKED
+- Coach email subscription: aucun backend, juste toast + état frontend (coach-email-success)
+- Coaching personnalisé CTA: bouton "Bientôt" avec toast informatif
