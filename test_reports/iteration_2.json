@@ -1,0 +1,42 @@
+{
+  "summary": "Frontend-only Playwright E2E re-test of IRON CALCULATOR premium upgrade. All 11 review-request features VERIFIED PASS. Hero scroll, AI loader (data-testid='ai-loader'), result dashboard with all 35 required testids, calculation correctness (BMR=1728, TDEE=2678, target=2678, BMI=23.7, lean mass=58.9 kg Boer, bodyfat=18.7% Deurenberg, water=2.9 L), email mock flow (invalid blocked, valid shows coach-email-success), theme toggle (dark <-> light with html.dark class toggling), recalculate scroll, both PDF buttons trigger downloads with zero JS errors, localStorage persistence across reload, ProgressionChart Recharts no width(-1)/height(-1) warnings. 0 console errors total.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "calculations.js: All formulas verified correct — BMR (Mifflin-St Jeor), BMI, Boer lean mass, Deurenberg bodyfat, hydration (35 ml/kg + 500 ml/training/7), target weight, weeks-to-goal.",
+    "ProgressionChart.jsx now sets minWidth/minHeight on ResponsiveContainer + explicit h-72 wrapper, eliminating Recharts width(-1)/height(-1) warnings observed in iteration_1.",
+    "CoachMode email validation regex /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/ correctly rejects 'notanemail' and accepts 'me@test.com'. Mock-only (no backend) — clearly flagged.",
+    "LoadingScreen total ~1.35s (1.1s steps + 0.25s exit) — matches review's ~1.4s expectation.",
+    "PDF generation via jsPDF runs purely client-side; no console errors triggered on either download-pdf-btn or coach-pdf-btn click."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "100%"},
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Premium upgrade fully verified. All 35 data-testids present. Default profile (male/28/178/75/active/maintenance/4 workouts/musculation) yields the exact expected metrics from the review request. The review's Test 4 expected values (BMR ~1728, TDEE ~2678, target ~2678, BMI 23.7, water 2.9 L) all match implementation. Email mock works as designed. Theme toggle works (regression from iteration_1 fixed — html class transitions dark->'' on toggle). PDF downloads (regular + coach) produce no console errors. localStorage key 'iron-calculator-last' persists and restores big-calories=2678 after reload. Zero JS console errors throughout the entire flow.",
+  "test_evidence": {
+    "ai_loader_visible": true,
+    "all_35_testids_present": true,
+    "calc_male_28_178_75_active_maintenance": {
+      "bmr": 1728, "tdee": 2678, "target": 2678,
+      "bmi": "23.7", "leanMass_kg": "58.9", "bodyFat_pct": "18.7", "water_L": "2.9",
+      "macros_g": {"protein": 150, "carbs": 366, "fat": 68}
+    },
+    "email_invalid_blocks_success": true,
+    "email_valid_shows_success": true,
+    "theme_toggle_dark_to_light": "dark -> '' (light)",
+    "recalculate_scroll_to_form_y": 0,
+    "download_pdf_btn_console_errors": 0,
+    "coach_pdf_btn_console_errors": 0,
+    "localstorage_persistence_after_reload_big_calories": 2678,
+    "recharts_negative_dim_warnings": 0,
+    "total_console_errors": 0
+  }
+}

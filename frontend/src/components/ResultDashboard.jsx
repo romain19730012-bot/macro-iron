@@ -1,4 +1,10 @@
+import { motion } from "framer-motion";
 import { MacroChart } from "./MacroChart";
+import { ExtendedMetrics } from "./ExtendedMetrics";
+import { MealPlan } from "./MealPlan";
+import { TrainingPlan } from "./TrainingPlan";
+import { ProgressionChart } from "./ProgressionChart";
+import { CoachMode } from "./CoachMode";
 import { tipsForGoal } from "../lib/calculations";
 import { Download, RotateCcw, TrendingUp, Activity, Target, Zap } from "lucide-react";
 
@@ -6,9 +12,24 @@ export const ResultDashboard = ({ profile, plan, onRecalculate, onDownload }) =>
     const tips = tipsForGoal(profile.goal, profile.sport);
 
     return (
-        <div data-testid="result-dashboard" className="space-y-6 animate-fade-up">
-            {/* Top metrics row */}
-            <div className="grid grid-cols-1 gap-px border border-white/10 bg-white/10 md:grid-cols-3">
+        <motion.div
+            data-testid="result-dashboard"
+            initial="hidden"
+            animate="show"
+            variants={{
+                hidden: {},
+                show: { transition: { staggerChildren: 0.1 } },
+            }}
+            className="space-y-16"
+        >
+            {/* TOP METRICS */}
+            <motion.div
+                variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+                }}
+                className="grid grid-cols-1 gap-px border border-white/10 bg-white/10 md:grid-cols-3"
+            >
                 <Metric
                     icon={<Activity className="h-4 w-4" strokeWidth={1.5} />}
                     label="Métabolisme de base"
@@ -34,13 +55,19 @@ export const ResultDashboard = ({ profile, plan, onRecalculate, onDownload }) =>
                     accent
                     testid="metric-target"
                 />
-            </div>
+            </motion.div>
 
-            {/* Big card: calories + chart + macros */}
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
-                {/* Headline */}
+            {/* HEADLINE + CHART */}
+            <motion.div
+                variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    show: { opacity: 1, y: 0, transition: { duration: 0.55 } },
+                }}
+                className="grid grid-cols-1 gap-6 lg:grid-cols-5"
+            >
                 <div className="relative col-span-1 overflow-hidden border border-white/10 bg-card p-8 lg:col-span-3">
                     <div className="absolute inset-0 grid-pattern opacity-30" aria-hidden />
+                    <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-[#E60000] opacity-10 blur-[120px]" aria-hidden />
                     <div className="relative">
                         <div className="flex items-center gap-3">
                             <span className="h-px w-10 bg-[#E60000]" />
@@ -68,9 +95,9 @@ export const ResultDashboard = ({ profile, plan, onRecalculate, onDownload }) =>
                                 type="button"
                                 onClick={onDownload}
                                 data-testid="download-pdf-btn"
-                                className="inline-flex items-center gap-3 bg-[#E60000] px-6 py-3 font-heading text-base uppercase tracking-wider text-white transition-colors hover:bg-[#FF1A1A]"
+                                className="group inline-flex items-center gap-3 bg-[#E60000] px-6 py-3 font-heading text-base uppercase tracking-wider text-white transition-all hover:bg-[#FF1A1A] hover:shadow-[0_0_24px_rgba(230,0,0,0.4)]"
                             >
-                                <Download className="h-4 w-4" strokeWidth={2} />
+                                <Download className="h-4 w-4 transition-transform group-hover:translate-y-0.5" strokeWidth={2} />
                                 Télécharger mon plan
                             </button>
                             <button
@@ -79,14 +106,13 @@ export const ResultDashboard = ({ profile, plan, onRecalculate, onDownload }) =>
                                 data-testid="recalculate-btn"
                                 className="inline-flex items-center gap-3 border border-white/20 bg-transparent px-6 py-3 font-heading text-base uppercase tracking-wider text-foreground transition-colors hover:border-white/60"
                             >
-                                <RotateCcw className="h-4 w-4" strokeWidth={1.5} />
+                                <RotateCcw className="h-4 w-4 transition-transform group-hover:-rotate-45" strokeWidth={1.5} />
                                 Recalculer
                             </button>
                         </div>
                     </div>
                 </div>
 
-                {/* Chart */}
                 <div className="col-span-1 border border-white/10 bg-card p-8 lg:col-span-2">
                     <div className="flex items-center gap-3">
                         <span className="h-px w-10 bg-[#E60000]" />
@@ -99,10 +125,16 @@ export const ResultDashboard = ({ profile, plan, onRecalculate, onDownload }) =>
                     </div>
                     <Legend macros={plan.macros} />
                 </div>
-            </div>
+            </motion.div>
 
-            {/* Macros detailed */}
-            <div className="grid grid-cols-1 gap-px border border-white/10 bg-white/10 md:grid-cols-3">
+            {/* MACROS DETAIL */}
+            <motion.div
+                variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+                }}
+                className="grid grid-cols-1 gap-px border border-white/10 bg-white/10 md:grid-cols-3"
+            >
                 <MacroCard
                     label="Protéines"
                     grams={plan.macros.protein.grams}
@@ -127,17 +159,35 @@ export const ResultDashboard = ({ profile, plan, onRecalculate, onDownload }) =>
                     note="0.9 g / kg"
                     testid="macro-fat"
                 />
-            </div>
+            </motion.div>
 
-            {/* Tips */}
-            <div className="border border-white/10 bg-card p-8">
+            {/* EXTENDED BODY METRICS */}
+            <ExtendedMetrics plan={plan} profile={profile} />
+
+            {/* PROGRESSION */}
+            <ProgressionChart plan={plan} profile={profile} />
+
+            {/* MEAL PLAN */}
+            <MealPlan plan={plan} />
+
+            {/* TRAINING */}
+            <TrainingPlan plan={plan} profile={profile} />
+
+            {/* TIPS */}
+            <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.15 }}
+                transition={{ duration: 0.5 }}
+                className="border border-white/10 bg-card p-8"
+            >
                 <div className="flex items-center gap-3">
                     <TrendingUp className="h-4 w-4 text-[#E60000]" strokeWidth={2} />
                     <span className="text-xs font-bold uppercase tracking-[0.3em] text-[#E60000]">
                         Recommandations
                     </span>
                 </div>
-                <h3 className="mt-3 font-heading text-3xl uppercase tracking-tight text-foreground">
+                <h3 className="mt-3 font-heading text-3xl uppercase tracking-tight text-foreground sm:text-4xl">
                     Plan d'action nutritionnel
                 </h3>
                 <ul className="mt-6 grid grid-cols-1 gap-3 md:grid-cols-2">
@@ -156,15 +206,18 @@ export const ResultDashboard = ({ profile, plan, onRecalculate, onDownload }) =>
                         </li>
                     ))}
                 </ul>
-            </div>
-        </div>
+            </motion.div>
+
+            {/* COACH MODE */}
+            <CoachMode onDownloadPDF={onDownload} />
+        </motion.div>
     );
 };
 
 const Metric = ({ icon, label, value, unit, note, accent, testid }) => (
     <div
         data-testid={testid}
-        className={`bg-card p-6 ${accent ? "relative" : ""}`}
+        className={`relative bg-card p-6 transition-colors hover:bg-[#1A1A1A] ${accent ? "" : ""}`}
     >
         {accent ? (
             <div className="absolute left-0 top-0 h-1 w-full bg-[#E60000]" />
@@ -188,7 +241,7 @@ const Metric = ({ icon, label, value, unit, note, accent, testid }) => (
 );
 
 const MacroCard = ({ label, grams, kcal, color, note, testid }) => (
-    <div data-testid={testid} className="bg-card p-6">
+    <div data-testid={testid} className="bg-card p-6 transition-colors hover:bg-[#1A1A1A]">
         <div className="flex items-center gap-3">
             <span
                 className="h-3 w-3 shrink-0"

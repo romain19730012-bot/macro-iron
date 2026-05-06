@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
 import { Hero } from "../components/Hero";
 import { CalculatorForm } from "../components/CalculatorForm";
 import { ResultDashboard } from "../components/ResultDashboard";
 import { ThemeToggle } from "../components/ThemeToggle";
+import { LoadingScreen } from "../components/LoadingScreen";
 import { computePlan } from "../lib/calculations";
 import { downloadPlanPDF } from "../lib/pdf";
 import { toast } from "sonner";
@@ -12,11 +14,12 @@ const STORAGE_KEY = "iron-calculator-last";
 export default function IronCalculator({ theme, toggleTheme }) {
     const [profile, setProfile] = useState(null);
     const [plan, setPlan] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [pendingResult, setPendingResult] = useState(null);
 
     const formRef = useRef(null);
     const resultRef = useRef(null);
 
-    // Restore last calculation from localStorage on mount
     useEffect(() => {
         try {
             const raw = localStorage.getItem(STORAGE_KEY);
@@ -27,28 +30,33 @@ export default function IronCalculator({ theme, toggleTheme }) {
                 setPlan(saved.plan);
             }
         } catch {
-            // ignore corrupt local storage
+            /* ignore */
         }
     }, []);
 
     const handleCompute = (formProfile) => {
         const computed = computePlan(formProfile);
-        setProfile(formProfile);
-        setPlan(computed);
-        localStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify({ profile: formProfile, plan: computed })
-        );
+        // Save what to apply once loader finishes
+        setPendingResult({ profile: formProfile, plan: computed });
+        setLoading(true);
+    };
+
+    const onLoaderDone = () => {
+        if (!pendingResult) {
+            setLoading(false);
+            return;
+        }
+        setProfile(pendingResult.profile);
+        setPlan(pendingResult.plan);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(pendingResult));
+        setLoading(false);
+        setPendingResult(null);
         toast.success("Plan généré", {
-            description: `${computed.targetCalories} kcal / jour calculées`,
+            description: `${pendingResult.plan.targetCalories} kcal / jour calculées`,
         });
-        // Smooth scroll to result
         setTimeout(() => {
-            resultRef.current?.scrollIntoView({
-                behavior: "smooth",
-                block: "start",
-            });
-        }, 80);
+            resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 120);
     };
 
     const handleReset = () => {
@@ -65,7 +73,9 @@ export default function IronCalculator({ theme, toggleTheme }) {
     const handleDownload = () => {
         if (!profile || !plan) return;
         downloadPlanPDF(profile, plan);
-        toast.success("PDF téléchargé");
+        toast.success("PDF Premium téléchargé", {
+            description: "3 pages: dashboard, plan repas, recommandations",
+        });
     };
 
     const scrollToForm = () => {
@@ -74,7 +84,9 @@ export default function IronCalculator({ theme, toggleTheme }) {
 
     return (
         <div className="min-h-screen bg-background text-foreground">
-            {/* Header bar */}
+            <LoadingScreen visible={loading} onDone={onLoaderDone} />
+
+            {/* Header */}
             <header
                 data-testid="app-header"
                 className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-background/80 backdrop-blur-xl"
@@ -85,7 +97,7 @@ export default function IronCalculator({ theme, toggleTheme }) {
                         className="flex items-center gap-3"
                         data-testid="brand-logo"
                     >
-                        <span className="inline-flex h-8 w-8 items-center justify-center bg-[#E60000] font-heading text-lg uppercase text-white">
+                        <span className="inline-flex h-8 w-8 items-center justify-center bg-[#E60000] font-heading text-lg uppercase text-white shadow-[0_0_18px_rgba(230,0,0,0.6)]">
                             IC
                         </span>
                         <span className="font-heading text-xl uppercase tracking-wider text-foreground">
@@ -109,7 +121,7 @@ export default function IronCalculator({ theme, toggleTheme }) {
             <main id="top">
                 <Hero onScrollToForm={scrollToForm} />
 
-                {/* Form section */}
+                {/* Form */}
                 <section
                     ref={formRef}
                     data-testid="form-section"
@@ -117,7 +129,13 @@ export default function IronCalculator({ theme, toggleTheme }) {
                 >
                     <div className="absolute inset-0 grid-pattern opacity-40" aria-hidden />
                     <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
-                        <div className="mb-12 grid grid-cols-1 gap-10 lg:grid-cols-3">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, amount: 0.2 }}
+                            transition={{ duration: 0.5 }}
+                            className="mb-12 grid grid-cols-1 gap-10 lg:grid-cols-3"
+                        >
                             <div className="lg:col-span-1">
                                 <div className="flex items-center gap-3">
                                     <span className="h-px w-12 bg-[#E60000]" />
@@ -138,6 +156,8 @@ export default function IronCalculator({ theme, toggleTheme }) {
                                     <li>→ Mifflin-St Jeor (BMR)</li>
                                     <li>→ TDEE × facteur d'activité</li>
                                     <li>→ Macros adaptées au sportif</li>
+                                    <li>→ IMC, masse maigre, bodyfat, hydratation</li>
+                                    <li>→ Plan repas + entraînement</li>
                                 </ul>
                             </div>
                             <div className="lg:col-span-2">
@@ -147,7 +167,7 @@ export default function IronCalculator({ theme, toggleTheme }) {
                                     defaults={profile}
                                 />
                             </div>
-                        </div>
+                        </motion.div>
                     </div>
                 </section>
 
@@ -158,7 +178,13 @@ export default function IronCalculator({ theme, toggleTheme }) {
                     className="relative"
                 >
                     <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
-                        <div className="mb-10">
+                        <motion.div
+                            initial={{ opacity: 0, y: 16 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, amount: 0.2 }}
+                            transition={{ duration: 0.5 }}
+                            className="mb-12"
+                        >
                             <div className="flex items-center gap-3">
                                 <span className="h-px w-12 bg-[#E60000]" />
                                 <span className="text-xs font-bold uppercase tracking-[0.3em] text-[#E60000]">
@@ -170,7 +196,7 @@ export default function IronCalculator({ theme, toggleTheme }) {
                                 <br />
                                 <span className="text-[#E60000]">de combat.</span>
                             </h2>
-                        </div>
+                        </motion.div>
 
                         {plan && profile ? (
                             <ResultDashboard

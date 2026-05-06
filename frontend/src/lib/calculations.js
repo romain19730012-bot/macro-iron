@@ -5,6 +5,12 @@
  *  - TDEE = BMR * facteur d'activité
  *  - Calories objectif = TDEE +/- pourcentage selon objectif
  *  - Macros: Protéines 2 g/kg, Lipides 0.9 g/kg, Glucides = reste
+ *  - IMC (BMI)
+ *  - Masse maigre (Boer)
+ *  - Bodyfat estimé (Deurenberg)
+ *  - Besoin hydrique : 35 ml/kg + 500 ml/séance
+ *  - Poids cible recommandé selon objectif
+ *  - Vitesse de progression réaliste (semaines)
  */
 
 export const ACTIVITY_FACTORS = {
@@ -16,10 +22,10 @@ export const ACTIVITY_FACTORS = {
 };
 
 export const GOALS = {
-    weight_loss: { adjustment: -0.15, label: "Perte de poids" },
-    maintenance: { adjustment: 0, label: "Maintien" },
-    bulk: { adjustment: 0.10, label: "Prise de masse" },
-    cut: { adjustment: -0.20, label: "Sèche sportive" },
+    weight_loss: { adjustment: -0.15, label: "Perte de poids", direction: -1, weeklyKg: 0.5 },
+    maintenance: { adjustment: 0, label: "Maintien", direction: 0, weeklyKg: 0 },
+    bulk: { adjustment: 0.10, label: "Prise de masse", direction: 1, weeklyKg: 0.3 },
+    cut: { adjustment: -0.20, label: "Sèche sportive", direction: -1, weeklyKg: 0.6 },
 };
 
 export const SPORTS = {
@@ -31,30 +37,98 @@ export const SPORTS = {
     mixed: "Mixte",
 };
 
-/**
- * Compute Basal Metabolic Rate (Mifflin-St Jeor)
- * @param {"male"|"female"} gender
- * @param {number} weightKg
- * @param {number} heightCm
- * @param {number} ageYears
- */
 export const computeBMR = (gender, weightKg, heightCm, ageYears) => {
     const base = 10 * weightKg + 6.25 * heightCm - 5 * ageYears;
     return gender === "male" ? base + 5 : base - 161;
 };
 
-/**
- * Full nutrition plan computation
- * @param {{
- *   gender: "male"|"female",
- *   age: number, height: number, weight: number,
- *   activity: keyof typeof ACTIVITY_FACTORS,
- *   goal: keyof typeof GOALS,
- *   workouts: number, sport: keyof typeof SPORTS
- * }} profile
- */
+/** IMC */
+export const computeBMI = (weightKg, heightCm) => {
+    const m = heightCm / 100;
+    return +(weightKg / (m * m)).toFixed(1);
+};
+
+/** Catégorie IMC */
+export const bmiCategory = (bmi) => {
+    if (bmi < 18.5) return "Maigreur";
+    if (bmi < 25) return "Normal";
+    if (bmi < 30) return "Surpoids";
+    return "Obésité";
+};
+
+/** Masse maigre — formule Boer */
+export const computeLeanMass = (gender, weightKg, heightCm) => {
+    const lm =
+        gender === "male"
+            ? 0.407 * weightKg + 0.267 * heightCm - 19.2
+            : 0.252 * weightKg + 0.473 * heightCm - 48.3;
+    return +Math.max(0, lm).toFixed(1);
+};
+
+/** Estimation bodyfat — Deurenberg */
+export const computeBodyFat = (gender, weightKg, heightCm, age) => {
+    const bmi = computeBMI(weightKg, heightCm);
+    const sex = gender === "male" ? 1 : 0;
+    const bf = 1.2 * bmi + 0.23 * age - 10.8 * sex - 5.4;
+    return +Math.max(3, bf).toFixed(1);
+};
+
+/** Besoin hydrique journalier (litres) */
+export const computeWaterNeeds = (weightKg, workoutsPerWeek) => {
+    const baseMl = 35 * weightKg;
+    const trainingExtraMl = (workoutsPerWeek / 7) * 500;
+    return +((baseMl + trainingExtraMl) / 1000).toFixed(1);
+};
+
+/** Poids cible recommandé selon objectif (basé sur IMC sain ~22) */
+export const computeTargetWeight = (gender, weightKg, heightCm, goalKey) => {
+    const m = heightCm / 100;
+    const idealBMI = gender === "male" ? 22.5 : 21.5;
+    const idealWeight = +(idealBMI * m * m).toFixed(1);
+    const goal = GOALS[goalKey];
+    if (goal.direction === 0) return weightKg;
+    if (goal.direction === -1) {
+        // perte / sèche : viser entre poids actuel et idéal
+        return +Math.max(idealWeight, weightKg - 5).toFixed(1);
+    }
+    // bulk : +5 kg réaliste
+    return +(weightKg + 5).toFixed(1);
+};
+
+/** Estimation semaines pour atteindre la cible */
+export const computeWeeksToGoal = (weightKg, targetWeight, goalKey) => {
+    const goal = GOALS[goalKey];
+    if (goal.weeklyKg === 0) return 0;
+    const diff = Math.abs(targetWeight - weightKg);
+    return Math.max(1, Math.round(diff / goal.weeklyKg));
+};
+
+/** Courbe progression : tableau de points {week, weight} */
+export const buildProgressionCurve = (weightKg, targetWeight, weeks) => {
+    if (weeks <= 0) {
+        return [
+            { week: 0, weight: weightKg, label: "S0" },
+            { week: 4, weight: weightKg, label: "S4" },
+            { week: 8, weight: weightKg, label: "S8" },
+            { week: 12, weight: weightKg, label: "S12" },
+        ];
+    }
+    const total = Math.min(weeks, 24);
+    const step = total / 8;
+    const data = [];
+    for (let i = 0; i <= 8; i++) {
+        const w = i * step;
+        // courbe légèrement non-linéaire (rapide au début, ralentit)
+        const progress = 1 - Math.pow(1 - w / total, 1.4);
+        const weight =
+            +(weightKg + (targetWeight - weightKg) * progress).toFixed(1);
+        data.push({ week: Math.round(w), weight, label: `S${Math.round(w)}` });
+    }
+    return data;
+};
+
 export const computePlan = (profile) => {
-    const { gender, age, height, weight, activity, goal } = profile;
+    const { gender, age, height, weight, activity, goal, workouts } = profile;
 
     const bmr = computeBMR(gender, weight, height, age);
     const factor = ACTIVITY_FACTORS[activity].factor;
@@ -63,7 +137,6 @@ export const computePlan = (profile) => {
     const adjustment = GOALS[goal].adjustment;
     const targetCalories = tdee * (1 + adjustment);
 
-    // Macro split: priority on protein and fat per kg, carbs fill the gap
     const proteinG = +(2 * weight).toFixed(0);
     const fatG = +(0.9 * weight).toFixed(0);
     const proteinKcal = proteinG * 4;
@@ -71,6 +144,15 @@ export const computePlan = (profile) => {
     const remainingKcal = Math.max(0, targetCalories - proteinKcal - fatKcal);
     const carbsG = +(remainingKcal / 4).toFixed(0);
     const carbsKcal = carbsG * 4;
+
+    // Extended metrics
+    const bmi = computeBMI(weight, height);
+    const leanMass = computeLeanMass(gender, weight, height);
+    const bodyFat = computeBodyFat(gender, weight, height, age);
+    const water = computeWaterNeeds(weight, workouts);
+    const targetWeight = computeTargetWeight(gender, weight, height, goal);
+    const weeksToGoal = computeWeeksToGoal(weight, targetWeight, goal);
+    const progression = buildProgressionCurve(weight, targetWeight, weeksToGoal);
 
     return {
         bmr: Math.round(bmr),
@@ -81,6 +163,16 @@ export const computePlan = (profile) => {
             carbs: { grams: carbsG, kcal: Math.round(carbsKcal) },
             fat: { grams: fatG, kcal: Math.round(fatKcal) },
         },
+        body: {
+            bmi,
+            bmiCategory: bmiCategory(bmi),
+            leanMass,
+            bodyFat,
+            water,
+            targetWeight,
+            weeksToGoal,
+        },
+        progression,
         meta: {
             activityLabel: ACTIVITY_FACTORS[activity].label,
             goalLabel: GOALS[goal].label,
@@ -89,9 +181,6 @@ export const computePlan = (profile) => {
     };
 };
 
-/**
- * Generate personalised nutrition tips based on the goal
- */
 export const tipsForGoal = (goal, sport) => {
     const common = [
         "Hydrate-toi : minimum 35 ml/kg de poids de corps par jour.",
@@ -130,4 +219,90 @@ export const tipsForGoal = (goal, sport) => {
     };
 
     return [...common, ...goalSpecific[goal], sportSpecific[sport]];
+};
+
+/**
+ * Generate a sample meal plan adapted to goal and macros
+ * Returns an array of meals with foods (label, qty, p/c/f estimate kcal split)
+ */
+export const buildMealPlan = (plan) => {
+    const { macros, targetCalories } = plan;
+    // distribution typique: PtitDej 25%, Déjeuner 35%, Collation 10%, Dîner 30%
+    const split = { breakfast: 0.25, lunch: 0.35, snack: 0.1, dinner: 0.3 };
+
+    const meal = (key, name, kcal, foods) => ({
+        key,
+        name,
+        kcal: Math.round(kcal),
+        protein: Math.round(macros.protein.grams * split[key]),
+        carbs: Math.round(macros.carbs.grams * split[key]),
+        fat: Math.round(macros.fat.grams * split[key]),
+        foods,
+    });
+
+    return [
+        meal("breakfast", "Petit-déjeuner", targetCalories * split.breakfast, [
+            { food: "Flocons d'avoine", qty: "80 g" },
+            { food: "Lait demi-écrémé", qty: "250 ml" },
+            { food: "Oeufs entiers", qty: "2" },
+            { food: "Banane", qty: "1" },
+            { food: "Beurre de cacahuète", qty: "15 g" },
+        ]),
+        meal("lunch", "Déjeuner", targetCalories * split.lunch, [
+            { food: "Poulet grillé / dinde", qty: "180 g" },
+            { food: "Riz basmati cuit", qty: "200 g" },
+            { food: "Légumes verts (brocoli, haricots)", qty: "200 g" },
+            { food: "Huile d'olive", qty: "1 c. à soupe" },
+            { food: "Fromage blanc 0 %", qty: "100 g" },
+        ]),
+        meal("snack", "Collation", targetCalories * split.snack, [
+            { food: "Whey isolate", qty: "30 g" },
+            { food: "Amandes", qty: "20 g" },
+            { food: "Pomme ou fruit de saison", qty: "1" },
+        ]),
+        meal("dinner", "Dîner", targetCalories * split.dinner, [
+            { food: "Saumon ou cabillaud", qty: "180 g" },
+            { food: "Patate douce", qty: "200 g" },
+            { food: "Salade verte + crudités", qty: "à volonté" },
+            { food: "Avocat", qty: "1/2" },
+            { food: "Yaourt grec nature", qty: "150 g" },
+        ]),
+    ];
+};
+
+/** Training recommendations adapted to goal */
+export const buildTrainingPlan = (goal, sport, workouts) => {
+    const goalIntro = {
+        weight_loss:
+            "Combinaison force + cardio modéré pour préserver le muscle tout en créant un déficit énergétique.",
+        maintenance:
+            "Maintiens ton volume actuel et travaille la qualité technique de chaque mouvement.",
+        bulk:
+            "Privilégie la surcharge progressive : ajoute du poids ou des reps chaque semaine.",
+        cut:
+            "Conserve l'intensité, baisse le volume si la récup est dégradée. Le muscle ne se construit pas en sèche.",
+    };
+
+    const cardio = {
+        weight_loss: "3 séances de 30-45 min de zone 2 (60-70 % FCmax) + 1 HIIT court.",
+        maintenance: "1-2 séances de cardio léger pour la santé cardiovasculaire.",
+        bulk: "1 séance courte de cardio (15-20 min) pour la récupération.",
+        cut: "2-3 séances de zone 2 + 1 HIIT en fin de séance de muscu.",
+    };
+
+    return {
+        intro: goalIntro[goal],
+        sessions: Math.max(3, Math.min(6, workouts || 4)),
+        cardio: cardio[goal],
+        recovery: [
+            "1-2 jours OFF complets par semaine.",
+            "Mobilité 10 min après chaque séance.",
+            "Marche quotidienne : minimum 8 000 pas / jour.",
+        ],
+        sleep: "7-9 h, fenêtre régulière. Le sommeil profond conditionne la testostérone et la GH.",
+        hydration:
+            "Boire toutes les 15-20 min pendant l'effort. Ajouter du sodium au-delà de 90 min.",
+        proteinTiming:
+            "Répartir les protéines sur 4 prises (≥ 30 g par prise) pour maximiser la synthèse.",
+    };
 };
