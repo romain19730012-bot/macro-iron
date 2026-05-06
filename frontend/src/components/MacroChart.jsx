@@ -21,7 +21,7 @@ export const MacroChart = ({ macros, totalCalories }) => {
 
     return (
         <div className="relative h-64 w-full" data-testid="macro-chart">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={200} minHeight={240}>
                 <PieChart>
                     <Pie
                         data={data}
