@@ -10,6 +10,36 @@ import { downloadPlanPDF } from "../lib/pdf";
 import { toast } from "sonner";
 
 const STORAGE_KEY = "iron-calculator-last";
+const STORAGE_VERSION = 2;
+
+/**
+ * A plan is "complete" only if it carries all the fields the new dashboard
+ * requires. Older versions saved a smaller object and would crash downstream
+ * components (ExtendedMetrics, MealPlan, ProgressionChart, …).
+ */
+const isPlanComplete = (plan) =>
+    plan &&
+    typeof plan === "object" &&
+    plan.macros &&
+    plan.macros.protein &&
+    plan.macros.carbs &&
+    plan.macros.fat &&
+    plan.body &&
+    typeof plan.body.bmi === "number" &&
+    Array.isArray(plan.progression) &&
+    plan.meta;
+
+const isProfileValid = (p) =>
+    p &&
+    typeof p === "object" &&
+    p.gender &&
+    Number.isFinite(+p.age) &&
+    Number.isFinite(+p.height) &&
+    Number.isFinite(+p.weight) &&
+    p.activity &&
+    p.goal &&
+    p.sport &&
+    Number.isFinite(+p.workouts);
 
 export default function IronCalculator({ theme, toggleTheme }) {
     const [profile, setProfile] = useState(null);
@@ -25,12 +55,40 @@ export default function IronCalculator({ theme, toggleTheme }) {
             const raw = localStorage.getItem(STORAGE_KEY);
             if (!raw) return;
             const saved = JSON.parse(raw);
-            if (saved && saved.profile && saved.plan) {
-                setProfile(saved.profile);
-                setPlan(saved.plan);
+            if (!saved || !isProfileValid(saved.profile)) {
+                // Corrupt or pre-v2 entry without a valid profile → discard
+                localStorage.removeItem(STORAGE_KEY);
+                return;
             }
+
+            // Always restore the profile so the form keeps its values
+            setProfile(saved.profile);
+
+            // Migration: if the stored plan is incomplete (older schema or
+            // version bump), recompute from the saved profile so the new
+            // dashboard never receives a partial object.
+            if (saved.version !== STORAGE_VERSION || !isPlanComplete(saved.plan)) {
+                const recomputed = computePlan(saved.profile);
+                setPlan(recomputed);
+                localStorage.setItem(
+                    STORAGE_KEY,
+                    JSON.stringify({
+                        version: STORAGE_VERSION,
+                        profile: saved.profile,
+                        plan: recomputed,
+                    })
+                );
+                return;
+            }
+
+            setPlan(saved.plan);
         } catch {
-            /* ignore */
+            // Any parse / shape error → wipe the entry, never crash
+            try {
+                localStorage.removeItem(STORAGE_KEY);
+            } catch {
+                /* ignore */
+            }
         }
     }, []);
 
@@ -48,7 +106,18 @@ export default function IronCalculator({ theme, toggleTheme }) {
         }
         setProfile(pendingResult.profile);
         setPlan(pendingResult.plan);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(pendingResult));
+        try {
+            localStorage.setItem(
+                STORAGE_KEY,
+                JSON.stringify({
+                    version: STORAGE_VERSION,
+                    profile: pendingResult.profile,
+                    plan: pendingResult.plan,
+                })
+            );
+        } catch {
+            /* storage may be full / blocked — non fatal */
+        }
         setLoading(false);
         setPendingResult(null);
         toast.success("Plan généré", {
@@ -198,7 +267,7 @@ export default function IronCalculator({ theme, toggleTheme }) {
                             </h2>
                         </motion.div>
 
-                        {plan && profile ? (
+                        {plan && profile && isPlanComplete(plan) && isProfileValid(profile) ? (
                             <ResultDashboard
                                 profile={profile}
                                 plan={plan}

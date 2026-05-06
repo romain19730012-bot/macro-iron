@@ -3,6 +3,7 @@ import "@/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import IronCalculator from "./pages/IronCalculator";
 import { Toaster } from "./components/ui/sonner";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 
 const THEME_KEY = "iron-calculator-theme";
 
@@ -26,15 +27,17 @@ function App() {
 
     return (
         <div className="App">
-            <BrowserRouter>
-                <Routes>
-                    <Route
-                        path="/"
-                        element={<IronCalculator theme={theme} toggleTheme={toggleTheme} />}
-                    />
-                </Routes>
-            </BrowserRouter>
-            <Toaster richColors position="bottom-right" />
+            <ErrorBoundary>
+                <BrowserRouter>
+                    <Routes>
+                        <Route
+                            path="/"
+                            element={<IronCalculator theme={theme} toggleTheme={toggleTheme} />}
+                        />
+                    </Routes>
+                </BrowserRouter>
+                <Toaster richColors position="bottom-right" />
+            </ErrorBoundary>
         </div>
     );
 }

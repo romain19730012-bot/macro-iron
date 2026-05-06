@@ -7,6 +7,7 @@ const item = {
 };
 
 export const ExtendedMetrics = ({ plan, profile }) => {
+    if (!plan?.body || !profile) return null;
     const { body } = plan;
     const cards = [
         {

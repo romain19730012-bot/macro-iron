@@ -10,6 +10,7 @@ const ICONS = {
 };
 
 export const MealPlan = ({ plan }) => {
+    if (!plan?.macros || typeof plan.targetCalories !== "number") return null;
     const meals = buildMealPlan(plan);
 
     return (

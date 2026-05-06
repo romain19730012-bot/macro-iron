@@ -3,6 +3,7 @@ import { buildTrainingPlan } from "../lib/calculations";
 import { Dumbbell, HeartPulse, Moon, Droplet, Timer } from "lucide-react";
 
 export const TrainingPlan = ({ profile, plan }) => {
+    if (!profile || !plan?.body || !plan?.meta) return null;
     const tp = buildTrainingPlan(profile.goal, profile.sport, profile.workouts);
 
     const blocks = [

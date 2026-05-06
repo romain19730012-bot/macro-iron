@@ -9,6 +9,9 @@ import { tipsForGoal } from "../lib/calculations";
 import { Download, RotateCcw, TrendingUp, Activity, Target, Zap } from "lucide-react";
 
 export const ResultDashboard = ({ profile, plan, onRecalculate, onDownload }) => {
+    if (!plan || !profile || !plan.macros || !plan.body || !plan.meta) {
+        return null;
+    }
     const tips = tipsForGoal(profile.goal, profile.sport);
 
     return (
