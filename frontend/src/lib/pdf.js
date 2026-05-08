@@ -402,3 +402,166 @@ export const downloadPlanPDF = (profile, plan) => {
 
     doc.save(`iron-calculator-plan-${today.replace(/\//g, "-")}.pdf`);
 };
+
+/**
+ * FREE 1-page summary PDF.
+ * Intentionally minimal — calories, macros, body composition, 1 sample meal.
+ * The full multi-page coaching PDF is reserved for the upcoming PRO tier
+ * (downloadPlanPDF — kept available for waitlist members / preview).
+ */
+export const downloadFreePDF = (profile, plan) => {
+    if (!plan || !plan.macros || !plan.body || !plan.meta) {
+        throw new Error("Plan incomplet — impossible de générer le PDF");
+    }
+    const safe = (v, fb = "—") =>
+        v === undefined || v === null || (typeof v === "number" && !Number.isFinite(v)) ? fb : v;
+
+    const doc = new jsPDF({ unit: "mm", format: "a4" });
+    const W = doc.internal.pageSize.getWidth();
+    const H = doc.internal.pageSize.getHeight();
+    const M = 16;
+    const RED = [230, 0, 0];
+    const BLACK = [10, 10, 10];
+    const GRAY = [110, 110, 110];
+
+    const today = new Date().toLocaleDateString("fr-FR");
+
+    // Top header
+    doc.setFillColor(...BLACK);
+    doc.rect(0, 0, W, 26, "F");
+    doc.setFillColor(...RED);
+    doc.rect(M, 6, 14, 14, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(11);
+    doc.text("IC", M + 7, 15.5, { align: "center" });
+    doc.setFontSize(16);
+    doc.text("IRON CALCULATOR", M + 18, 13);
+    doc.setTextColor(200, 200, 200);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.text("Résumé gratuit · 1 page", M + 18, 19);
+    doc.setTextColor(255, 255, 255);
+    doc.text(today, W - M, 19, { align: "right" });
+    doc.setFillColor(...RED);
+    doc.rect(0, 26, W, 1.2, "F");
+
+    let y = 38;
+
+    // Profile inline
+    doc.setTextColor(...BLACK);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(11);
+    doc.text("PROFIL", M, y);
+    doc.setDrawColor(...RED);
+    doc.line(M, y + 1.5, M + 18, y + 1.5);
+    y += 7;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(...GRAY);
+    doc.text(
+        `${profile.gender === "male" ? "Homme" : "Femme"} · ${safe(profile.age)} ans · ${safe(profile.height)} cm · ${safe(profile.weight)} kg · ${safe(plan.meta.activityLabel)} · ${safe(plan.meta.goalLabel)}`,
+        M,
+        y
+    );
+    y += 10;
+
+    // BIG calories
+    doc.setFillColor(...RED);
+    doc.rect(M, y, W - M * 2, 26, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(28);
+    doc.text(`${safe(plan.targetCalories)} KCAL / JOUR`, W / 2, y + 16, { align: "center" });
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "normal");
+    const adjPct = plan.body?.adjustmentPct;
+    const adjLabel =
+        Number.isFinite(adjPct) && adjPct !== 0
+            ? `${adjPct > 0 ? "+" : ""}${(adjPct * 100).toFixed(0)} %`
+            : "TDEE";
+    doc.text(`Ajustement : ${adjLabel}`, W / 2, y + 22.5, { align: "center" });
+    y += 34;
+
+    // Macros + body in 2 columns
+    doc.setTextColor(...BLACK);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(11);
+    doc.text("MACROS", M, y);
+    doc.setDrawColor(...RED);
+    doc.line(M, y + 1.5, M + 22, y + 1.5);
+    doc.text("CORPS", M + (W - M * 2) / 2, y);
+    doc.line(M + (W - M * 2) / 2, y + 1.5, M + (W - M * 2) / 2 + 18, y + 1.5);
+    y += 9;
+
+    const colY = y;
+    const rightX = M + (W - M * 2) / 2;
+    const writeRow = (x, k, v) => {
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        doc.setTextColor(...GRAY);
+        doc.text(k, x, y);
+        doc.setTextColor(...BLACK);
+        doc.setFont("helvetica", "bold");
+        doc.text(`${v}`, x + 50, y);
+        y += 7;
+    };
+    writeRow(M, "Protéines", `${safe(plan.macros.protein?.grams)} g`);
+    writeRow(M, "Glucides", `${safe(plan.macros.carbs?.grams)} g`);
+    writeRow(M, "Lipides", `${safe(plan.macros.fat?.grams)} g`);
+
+    y = colY;
+    writeRow(rightX, "Bodyfat", `${safe(plan.body?.bodyFat)} %`);
+    writeRow(rightX, "Masse maigre", `${safe(plan.body?.leanMassReal ?? plan.body?.leanMass)} kg`);
+    writeRow(rightX, "Hydratation", `${safe(plan.body?.water)} L / jour`);
+
+    y += 6;
+
+    // Sample meal hint (1 only)
+    const meals = plan.mealPlan?.meals;
+    if (Array.isArray(meals) && meals[1]) {
+        const sample = meals[1]; // lunch as the most representative
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(11);
+        doc.setTextColor(...BLACK);
+        doc.text("EXEMPLE DE REPAS", M, y);
+        doc.setDrawColor(...RED);
+        doc.line(M, y + 1.5, M + 38, y + 1.5);
+        y += 7;
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(10);
+        doc.text(`${(sample.name || "").toUpperCase()} — ${safe(sample.kcal)} kcal`, M, y);
+        y += 6;
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(9);
+        doc.setTextColor(...GRAY);
+        (sample.foods || []).forEach((f) => {
+            doc.text(`•  ${f.food}`, M + 2, y);
+            doc.text(safe(f.qty), W - M, y, { align: "right" });
+            y += 5;
+        });
+    }
+
+    // Pro upsell footer
+    y = H - 30;
+    doc.setDrawColor(230, 0, 0);
+    doc.setLineWidth(0.6);
+    doc.line(M, y, W - M, y);
+    y += 5;
+    doc.setTextColor(230, 0, 0);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
+    doc.text("PRO ATHLETE SYSTEM", M, y);
+    y += 5;
+    doc.setTextColor(...GRAY);
+    doc.setFont("helvetica", "italic");
+    doc.setFontSize(8);
+    doc.text(
+        "Plan 7 jours, variantes, liste de courses, suivi hebdo, coaching dédié — bientôt disponible.",
+        M,
+        y,
+        { maxWidth: W - M * 2 }
+    );
+
+    doc.save(`iron-calculator-resume-${today.replace(/\//g, "-")}.pdf`);
+};
