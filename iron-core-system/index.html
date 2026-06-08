@@ -4,411 +4,345 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IRON CORE SYSTEM™ — Deviens ta Meilleure Version</title>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,700;0,800;0,900;1,700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;700;800;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-  <!-- ═══════════════════ NAV ═══════════════════ -->
-  <nav id="navbar">
+<!-- ═══════════════════════════ NAVBAR ═══════════════════════════ -->
+<nav id="navbar">
+  <div class="nav-left">
+    <!-- Logo -->
     <a href="#accueil" class="logo-link">
-      <svg width="52" height="52" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg width="44" height="44" viewBox="0 0 200 200" fill="none">
         <defs>
-          <radialGradient id="nbg" cx="38%" cy="32%" r="62%"><stop offset="0%" stop-color="#F4F5F8"/><stop offset="100%" stop-color="#C6CACF"/></radialGradient>
-          <linearGradient id="nbar" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#0D0D0D"/><stop offset="50%" stop-color="#4090FF"/><stop offset="100%" stop-color="#0D0D0D"/></linearGradient>
-          <linearGradient id="ncore" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#60A8FF"/><stop offset="100%" stop-color="#0A2A6A"/></linearGradient>
+          <radialGradient id="lg" cx="38%" cy="32%" r="62%"><stop offset="0%" stop-color="#F4F5F8"/><stop offset="100%" stop-color="#C6CACF"/></radialGradient>
+          <linearGradient id="lb" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#0D0D0D"/><stop offset="50%" stop-color="#4090FF"/><stop offset="100%" stop-color="#0D0D0D"/></linearGradient>
+          <linearGradient id="lc" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#60A8FF"/><stop offset="100%" stop-color="#1040A0"/></linearGradient>
         </defs>
-        <circle cx="100" cy="100" r="96" fill="url(#nbg)"/>
-        <circle cx="100" cy="100" r="94" stroke="#0D0D0D" stroke-width="6" fill="none"/>
-        <rect x="4" y="97" width="192" height="6" fill="url(#nbar)" rx="1"/>
-        <rect x="5" y="76" width="14" height="48" rx="2" fill="url(#ncore)"/>
-        <rect x="181" y="76" width="14" height="48" rx="2" fill="url(#ncore)"/>
-        <rect x="18" y="82" width="9" height="36" rx="1.5" fill="#4090FF"/>
-        <rect x="173" y="82" width="9" height="36" rx="1.5" fill="#4090FF"/>
-        <text x="100" y="81" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="900" font-size="29" letter-spacing="5" fill="#0D0D0D">IRON</text>
-        <text x="100" y="122" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="900" font-size="46" letter-spacing="2" fill="url(#ncore)">CORE</text>
-        <text x="100" y="150" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="700" font-size="21" letter-spacing="3" fill="#111">SYSTEM™</text>
+        <circle cx="100" cy="100" r="96" fill="url(#lg)"/>
+        <circle cx="100" cy="100" r="94" stroke="#111" stroke-width="6" fill="none"/>
+        <rect x="4" y="97" width="192" height="6" fill="url(#lb)" rx="1"/>
+        <rect x="5" y="76" width="13" height="48" rx="2" fill="url(#lc)"/>
+        <rect x="182" y="76" width="13" height="48" rx="2" fill="url(#lc)"/>
+        <rect x="17" y="82" width="8" height="36" rx="1" fill="#4090FF"/>
+        <rect x="175" y="82" width="8" height="36" rx="1" fill="#4090FF"/>
+        <text x="100" y="80" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="900" font-size="28" letter-spacing="4" fill="#0D0D0D">IRON</text>
+        <text x="100" y="121" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="900" font-size="44" letter-spacing="2" fill="url(#lc)">CORE</text>
+        <text x="100" y="149" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="700" font-size="20" letter-spacing="3" fill="#111">SYSTEM™</text>
       </svg>
     </a>
-
-    <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
-
+    <!-- Nav Links -->
     <ul class="nav-links">
-      <li><a href="#accueil" class="active">Accueil</a></li>
-      <li><a href="#propos">À Propos</a></li>
-      <li><a href="#programmes">Programmes</a></li>
-      <li><a href="#coaching">Coaching</a></li>
-      <li><a href="#ebooks">Ebooks</a></li>
-      <li><a href="#nutrition">Nutrition</a></li>
-      <li><a href="#blog">Blog</a></li>
-      <li><a href="#contact">Contact</a></li>
+      <li><a href="#accueil" class="active">ACCUEIL</a></li>
+      <li><a href="#propos">À PROPOS</a></li>
+      <li><a href="#programmes">PROGRAMMES</a></li>
+      <li><a href="#coaching">COACHING</a></li>
+      <li><a href="#ebooks">EBOOKS</a></li>
+      <li><a href="#nutrition">NUTRITION</a></li>
+      <li><a href="#blog">BLOG</a></li>
+      <li><a href="#contact">CONTACT</a></li>
     </ul>
+  </div>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  <a href="#rejoindre" class="btn-nav-cta">REJOINDRE IRON CORE</a>
+</nav>
 
-    <a href="#rejoindre" class="btn-cta">Rejoindre Iron Core</a>
-  </nav>
+<!-- ═══════════════════════════ HERO ═══════════════════════════ -->
+<section class="hero" id="accueil">
 
-  <!-- ═══════════════════ HERO ═══════════════════ -->
-  <section class="hero" id="accueil">
+  <!-- Image warrior droite -->
+  <div class="hero-warrior-wrap">
+    <img src="assets/images/warrior1.png" alt="Iron Core Warrior" class="hero-warrior-img">
+    <!-- Dégradé : fondu gauche + fondu bas -->
+    <div class="hero-warrior-fade"></div>
+  </div>
 
-    <!-- Fond cinématique global -->
-    <div class="hero-bg"></div>
+  <!-- Watermark IRON CORE SYSTEM (par-dessus le warrior, côté droit) -->
+  <div class="hero-brand-mark" aria-hidden="true">
+    <span class="hbm-iron">IRON</span>
+    <span class="hbm-core">CORE
+      <svg class="hbm-dumbbell" viewBox="0 0 120 28" width="110" height="26" fill="none">
+        <rect x="20" y="11" width="80" height="6" rx="1" fill="url(#dbg)"/>
+        <rect x="2" y="4" width="20" height="20" rx="3" fill="url(#dbg)"/>
+        <rect x="98" y="4" width="20" height="20" rx="3" fill="url(#dbg)"/>
+        <rect x="6" y="8" width="12" height="12" rx="2" fill="url(#dbg2)"/>
+        <rect x="102" y="8" width="12" height="12" rx="2" fill="url(#dbg2)"/>
+        <defs>
+          <linearGradient id="dbg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#4090FF"/><stop offset="100%" stop-color="#1565D8"/></linearGradient>
+          <linearGradient id="dbg2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#60A8FF"/><stop offset="100%" stop-color="#2060D0"/></linearGradient>
+        </defs>
+      </svg>
+    </span>
+    <span class="hbm-system">SYSTEM</span>
+  </div>
 
-    <!-- Colonne gauche : texte -->
-    <div class="hero-content">
-      <p class="hero-tag">
-        Discipline <span class="dot">●</span>
-        Puissance <span class="dot">●</span>
-        Transmission
-      </p>
+  <!-- Texte gauche -->
+  <div class="hero-content">
+    <p class="hero-eyebrow">DISCIPLINE <span class="sep-dot">•</span> PUISSANCE <span class="sep-dot">•</span> TRANSMISSION</p>
 
-      <h1>
-        <span class="h1-white">DEVIENS TA</span>
-        <span class="h1-blue">MEILLEURE<br>VERSION</span>
-      </h1>
+    <h1 class="hero-title">
+      <span class="ht-white">DEVIENS TA</span>
+      <span class="ht-blue">MEILLEURE VERSION</span>
+    </h1>
 
-      <p class="hero-desc">
-        Des méthodes éprouvées, des programmes puissants et un mindset
-        d'élite pour transformer ton corps et ton mental à jamais.
-      </p>
+    <p class="hero-desc">
+      Des méthodes éprouvées, des programmes puissants et un mindset<br>
+      d'élite pour transformer ton corps et ton mental à jamais.
+    </p>
 
-      <a href="#programmes" class="btn-hero">
-        Commence ta Transformation <span class="arrow">›</span>
-      </a>
+    <a href="#programmes" class="btn-hero-cta">
+      COMMENCE TA TRANSFORMATION <span class="btn-arrow">›</span>
+    </a>
 
-      <div class="hero-features">
-        <div class="hf">
-          <div class="hf-icon">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#4090FF" stroke-width="2.2" stroke-linecap="round"><path d="M6 4v16M18 4v16M2 8h4M18 8h4M2 16h4M18 16h4"/></svg>
-          </div>
-          <span>Programmes<br>Éprouvés</span>
+    <div class="hero-badges">
+      <div class="badge">
+        <div class="badge-icon">
+          <svg viewBox="0 0 22 22" width="18" height="18" fill="none" stroke="#4090FF" stroke-width="2" stroke-linecap="round"><path d="M5 3v16M17 3v16M2 7h4M16 7h4M2 15h4M16 15h4"/></svg>
         </div>
-        <div class="hf">
-          <div class="hf-icon">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#4090FF" stroke-width="2.2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-          </div>
-          <span>Résultats<br>Concrets</span>
+        <span>PROGRAMMES<br>ÉPROUVÉS</span>
+      </div>
+      <div class="badge">
+        <div class="badge-icon">
+          <svg viewBox="0 0 22 22" width="18" height="18" fill="none" stroke="#4090FF" stroke-width="2" stroke-linecap="round"><polyline points="21 5 12 14 7.5 9.5 1 16"/><polyline points="15 5 21 5 21 11"/></svg>
         </div>
-        <div class="hf">
-          <div class="hf-icon">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#4090FF" stroke-width="2.2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          </div>
-          <span>Communauté<br>Active</span>
+        <span>RÉSULTATS<br>CONCRETS</span>
+      </div>
+      <div class="badge">
+        <div class="badge-icon">
+          <svg viewBox="0 0 22 22" width="18" height="18" fill="none" stroke="#4090FF" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H4a4 4 0 0 0-4 4v2"/><circle cx="8" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M15 3.13a4 4 0 0 1 0 7.75"/></svg>
         </div>
-        <div class="hf">
-          <div class="hf-icon">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#4090FF" stroke-width="2.2" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-          </div>
-          <span>Support<br>Personnalisé</span>
+        <span>COMMUNAUTÉ<br>ACTIVE</span>
+      </div>
+      <div class="badge">
+        <div class="badge-icon">
+          <svg viewBox="0 0 22 22" width="18" height="18" fill="none" stroke="#4090FF" stroke-width="2" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
         </div>
+        <span>SUPPORT<br>PERSONNALISÉ</span>
       </div>
-    </div>
-
-    <!-- Colonne droite : personnage + watermark -->
-    <div class="hero-right">
-      <!-- Watermark IRON CORE SYSTEM -->
-      <div class="hero-watermark" aria-hidden="true">
-        <span class="wm-iron">IRON</span>
-        <span class="wm-core">CORE<svg class="wm-dumbbell" viewBox="0 0 60 20" width="70" height="24" fill="none"><rect x="0" y="8" width="60" height="4" rx="1" fill="rgba(64,144,255,0.6)"/><rect x="0" y="4" width="8" height="12" rx="1.5" fill="rgba(64,144,255,0.6)"/><rect x="52" y="4" width="8" height="12" rx="1.5" fill="rgba(64,144,255,0.6)"/></svg></span>
-        <span class="wm-system">SYSTEM</span>
-      </div>
-
-      <!-- Image warrior -->
-      <img src="assets/images/warrior2.png" alt="Iron Core Warrior" class="warrior-img">
-
-      <!-- Dégradé gauche pour fondu avec le texte -->
-      <div class="hero-right-fade"></div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════ BANDE ICS ═══════════════════ -->
-  <section class="ics-band" id="propos">
-    <span class="ics-arrow">❮❮</span>
-    <div class="ics-center">
-      <p class="ics-title">IRON CORE SYSTEM</p>
-      <p class="ics-desc">
-        Plus qu'une méthode, un système complet basé sur la discipline,
-        l'entraînement intelligent et le mindset de guerrier pour des résultats durables.
-      </p>
-    </div>
-    <span class="ics-arrow">❯❯</span>
-  </section>
-
-  <!-- ═══════════════════ FEATURE CARDS ═══════════════════ -->
-  <section class="features" id="programmes">
-
-    <!-- Card 1 : Programmes d'entraînement -->
-    <div class="feature-card">
-      <div class="card-img-bg" style="background-image: url('assets/images/warrior1.png')"></div>
-      <div class="card-inner">
-        <div class="card-icon">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#4090FF" stroke-width="2" stroke-linecap="round"><path d="M6 4v16M18 4v16M2 8h4M18 8h4M2 16h4M18 16h4"/></svg>
-        </div>
-        <h3 class="card-title">PROGRAMMES<br><span class="card-title-blue">D'ENTRAÎNEMENT</span></h3>
-        <p class="card-desc">Des programmes structurés pour chaque niveau et chaque objectif.</p>
-        <a href="#programmes" class="btn-card">Découvrir <span>›</span></a>
-      </div>
-    </div>
-
-    <!-- Card 2 : Ebooks & Guides -->
-    <div class="feature-card" id="ebooks">
-      <div class="card-img-bg" style="background-image: url('assets/images/warrior3.png')"></div>
-      <div class="card-inner">
-        <div class="card-icon">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#4090FF" stroke-width="2" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        </div>
-        <h3 class="card-title">EBOOKS &amp;<br><span class="card-title-blue">GUIDES</span></h3>
-        <p class="card-desc">Des guides complets pour améliorer ton physique et ton mindset.</p>
-        <a href="#ebooks" class="btn-card">Découvrir <span>›</span></a>
-      </div>
-    </div>
-
-    <!-- Card 3 : Coaching personnalisé -->
-    <div class="feature-card" id="coaching">
-      <div class="card-img-bg" style="background-image: url('assets/images/warrior2.png')"></div>
-      <div class="card-inner">
-        <div class="card-icon">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#4090FF" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="5"/><path d="M3 21v-2a7 7 0 0 1 14 0v2"/></svg>
-        </div>
-        <h3 class="card-title">COACHING<br><span class="card-title-blue">PERSONNALISÉ</span></h3>
-        <p class="card-desc">Un accompagnement sur-mesure pour des résultats maximaux.</p>
-        <a href="#coaching" class="btn-card">Découvrir <span>›</span></a>
-      </div>
-    </div>
-
-    <!-- Card 4 : Communauté -->
-    <div class="feature-card">
-      <div class="card-img-bg" style="background-image: url('assets/images/warrior1.png'); background-position: top center;"></div>
-      <div class="card-inner">
-        <div class="card-icon">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#4090FF" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        </div>
-        <h3 class="card-title">COMMUNAUTÉ<br><span class="card-title-blue">IRON CORE</span></h3>
-        <p class="card-desc">Rejoins une communauté de guerriers déterminés comme toi.</p>
-        <a href="#rejoindre" class="btn-card">Rejoindre <span>›</span></a>
-      </div>
-    </div>
-
-  </section>
-
-  <!-- ═══════════════════ STATS ═══════════════════ -->
-  <section class="stats">
-    <div class="stat reveal">
-      <div class="stat-icon">
-        <svg viewBox="0 0 44 44" width="40" height="40" fill="none" stroke="#4090FF" stroke-width="2.2" stroke-linecap="round"><path d="M8 6v32M36 6v32M4 16h5M35 16h5M4 28h5M35 28h5"/></svg>
-      </div>
-      <div><p class="stat-num">+10 000</p><p class="stat-label">TRANSFORMATIONS</p></div>
-    </div>
-    <div class="stat reveal">
-      <div class="stat-icon">
-        <svg viewBox="0 0 44 44" width="40" height="40" fill="none" stroke="#4090FF" stroke-width="2.2" stroke-linecap="round"><polygon points="22 3 28.2 16.1 42.8 18.2 32.4 28.3 34.8 42.9 22 36.4 9.2 42.9 11.6 28.3 1.2 18.2 15.8 16.1 22 3"/></svg>
-      </div>
-      <div><p class="stat-num">+50</p><p class="stat-label">PROGRAMMES</p></div>
-    </div>
-    <div class="stat reveal">
-      <div class="stat-icon">
-        <svg viewBox="0 0 44 44" width="40" height="40" fill="none" stroke="#4090FF" stroke-width="2.2" stroke-linecap="round"><circle cx="22" cy="22" r="18"/><polyline points="22 12 22 22 30 26"/></svg>
-      </div>
-      <div><p class="stat-num">+7 ANS</p><p class="stat-label">D'EXPÉRIENCE</p></div>
-    </div>
-    <div class="stat reveal">
-      <div class="stat-icon">
-        <svg viewBox="0 0 44 44" width="40" height="40" fill="none" stroke="#4090FF" stroke-width="2.2" stroke-linecap="round"><path d="M32 38v-4a8 8 0 0 0-8-8H12a8 8 0 0 0-8 8v4"/><circle cx="18" cy="14" r="8"/><path d="M44 38v-4a8 8 0 0 0-6-7.74M30 6.26a8 8 0 0 1 0 15.5"/></svg>
-      </div>
-      <div><p class="stat-num">+20 000</p><p class="stat-label">MEMBRES</p></div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════ TICKER ═══════════════════ -->
-  <div class="ticker">
-    <div class="ticker-track">
-      <span class="tk blue">Iron Core System™</span><span class="sep">◆</span>
-      <span class="tk">Prise de Masse</span><span class="sep">◆</span>
-      <span class="tk blue">Sèche Musculaire</span><span class="sep">◆</span>
-      <span class="tk">Nutrition d'Élite</span><span class="sep">◆</span>
-      <span class="tk blue">Discipline</span><span class="sep">◆</span>
-      <span class="tk">Force Mentale</span><span class="sep">◆</span>
-      <span class="tk blue">Coaching Premium</span><span class="sep">◆</span>
-      <span class="tk">Forged in Discipline</span><span class="sep">◆</span>
-      <span class="tk blue">Iron Core System™</span><span class="sep">◆</span>
-      <span class="tk">Prise de Masse</span><span class="sep">◆</span>
-      <span class="tk blue">Sèche Musculaire</span><span class="sep">◆</span>
-      <span class="tk">Nutrition d'Élite</span><span class="sep">◆</span>
-      <span class="tk blue">Discipline</span><span class="sep">◆</span>
-      <span class="tk">Force Mentale</span><span class="sep">◆</span>
-      <span class="tk blue">Coaching Premium</span><span class="sep">◆</span>
-      <span class="tk">Forged in Discipline</span><span class="sep">◆</span>
     </div>
   </div>
 
-  <!-- ═══════════════════ À PROPOS ═══════════════════ -->
-  <section class="about-section" id="propos-detail">
-    <div class="about-img">
-      <img src="assets/images/warrior3.png" alt="Coaching Iron Core" class="about-warrior">
-      <div class="about-img-overlay"></div>
-    </div>
-    <div class="about-content reveal">
-      <div class="section-label">À PROPOS</div>
-      <h2 class="section-title">LA MÉTHODE <span class="blue-grad">IRON CORE</span></h2>
-      <p class="section-desc">
-        Depuis plus de 7 ans, j'accompagne des centaines d'athlètes dans leur transformation physique et mentale. La méthode Iron Core System™ repose sur 3 piliers : la discipline, l'entraînement intelligent et le mindset de guerrier.
-      </p>
-      <div class="about-pillars">
-        <div class="pillar">
-          <div class="pillar-num">01</div>
-          <div><h4>DISCIPLINE</h4><p>La régularité prime sur l'intensité. Chaque jour compte.</p></div>
-        </div>
-        <div class="pillar">
-          <div class="pillar-num">02</div>
-          <div><h4>PUISSANCE</h4><p>Des programmes scientifiquement conçus pour maximiser tes gains.</p></div>
-        </div>
-        <div class="pillar">
-          <div class="pillar-num">03</div>
-          <div><h4>TRANSMISSION</h4><p>Un coaching personnalisé pour transmettre les bonnes méthodes.</p></div>
-        </div>
-      </div>
-    </div>
-  </section>
+</section>
 
-  <!-- ═══════════════════ NUTRITION ═══════════════════ -->
-  <section class="nutrition-section reveal" id="nutrition">
-    <div class="section-label">NUTRITION D'ÉLITE</div>
-    <h2 class="section-title">FUELE TON <span class="blue-grad">MOTEUR</span></h2>
-    <p class="section-desc">La performance commence dans l'assiette. Nos protocoles nutritionnels sont conçus pour maximiser ta croissance musculaire et ta récupération.</p>
-    <div class="nutrition-grid">
-      <div class="nutri-card">
-        <div class="nutri-icon"><svg viewBox="0 0 32 32" width="26" height="26" fill="none" stroke="#4090FF" stroke-width="2" stroke-linecap="round"><path d="M16 4C16 4 8 10 8 18C8 23 11.6 28 16 28C20.4 28 24 23 24 18C24 10 16 4 16 4Z" fill="rgba(64,144,255,0.15)"/><path d="M16 28L16 18"/></svg></div>
-        <h4>Prise de Masse</h4>
-        <p>Protocoles hypercaloriques optimisés pour maximiser la synthèse protéique.</p>
-      </div>
-      <div class="nutri-card">
-        <div class="nutri-icon"><svg viewBox="0 0 32 32" width="26" height="26" fill="none" stroke="#4090FF" stroke-width="2" stroke-linecap="round"><circle cx="16" cy="16" r="10"/><path d="M12 16L15 19L20 13"/></svg></div>
-        <h4>Sèche Musculaire</h4>
-        <p>Plans alimentaires précis pour fondre le gras en préservant le muscle.</p>
-      </div>
-      <div class="nutri-card">
-        <div class="nutri-icon"><svg viewBox="0 0 32 32" width="26" height="26" fill="none" stroke="#4090FF" stroke-width="2" stroke-linecap="round"><path d="M6 20L12 14L18 18L26 8"/><polyline points="20 8 26 8 26 14"/></svg></div>
-        <h4>Performance</h4>
-        <p>Macros ciblés et timing nutritionnel pour des entraînements explosifs.</p>
+<!-- ═══════════════════════════ BANDE ICS ═══════════════════════════ -->
+<div class="ics-band">
+  <span class="ics-chevron">❮❮</span>
+  <div class="ics-text">
+    <p class="ics-title">IRON CORE SYSTEM</p>
+    <p class="ics-desc">Plus qu'une méthode, un système complet basé sur la discipline, l'entraînement intelligent et le mindset de guerrier pour des résultats durables.</p>
+  </div>
+  <span class="ics-chevron">❯❯</span>
+</div>
+
+<!-- ═══════════════════════════ FEATURE CARDS ═══════════════════════════ -->
+<section class="cards-section" id="programmes">
+  <div class="cards-grid">
+
+    <!-- Card 1 -->
+    <div class="card" id="c1">
+      <div class="card-bg" style="background-image:url('assets/images/warrior1.png')"></div>
+      <div class="card-body">
+        <div class="card-icon-wrap">
+          <svg viewBox="0 0 22 22" width="22" height="22" fill="none" stroke="#4090FF" stroke-width="2" stroke-linecap="round"><path d="M5 3v16M17 3v16M2 7h4M16 7h4M2 15h4M16 15h4"/></svg>
+        </div>
+        <h3 class="card-title">PROGRAMMES<br><span class="card-blue">D'ENTRAÎNEMENT</span></h3>
+        <p class="card-desc">Des programmes structurés pour chaque niveau et chaque objectif.</p>
+        <a href="#programmes" class="card-cta">DÉCOUVRIR <span>›</span></a>
       </div>
     </div>
-  </section>
 
-  <!-- ═══════════════════ BLOG ═══════════════════ -->
-  <section class="blog-section" id="blog">
-    <div class="section-label">BLOG & CONSEILS</div>
-    <h2 class="section-title">DERNIERS <span class="blue-grad">ARTICLES</span></h2>
+    <!-- Card 2 -->
+    <div class="card" id="ebooks">
+      <div class="card-bg" style="background-image:url('assets/images/warrior3.png')"></div>
+      <div class="card-body">
+        <div class="card-icon-wrap">
+          <svg viewBox="0 0 22 22" width="22" height="22" fill="none" stroke="#4090FF" stroke-width="2" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </div>
+        <h3 class="card-title">EBOOKS &amp;<br><span class="card-blue">GUIDES</span></h3>
+        <p class="card-desc">Des guides complets pour améliorer ton physique et ton mindset.</p>
+        <a href="#ebooks" class="card-cta">DÉCOUVRIR <span>›</span></a>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="card" id="coaching">
+      <div class="card-bg" style="background-image:url('assets/images/warrior2.png')"></div>
+      <div class="card-body">
+        <div class="card-icon-wrap">
+          <svg viewBox="0 0 22 22" width="22" height="22" fill="none" stroke="#4090FF" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="8" r="4"/><path d="M3 21v-2a6 6 0 0 1 12 0v2"/></svg>
+        </div>
+        <h3 class="card-title">COACHING<br><span class="card-blue">PERSONNALISÉ</span></h3>
+        <p class="card-desc">Un accompagnement sur-mesure pour des résultats maximaux.</p>
+        <a href="#coaching" class="card-cta">DÉCOUVRIR <span>›</span></a>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="card">
+      <div class="card-bg" style="background-image:url('assets/images/warrior1.png'); background-position: 60% top;"></div>
+      <div class="card-body">
+        <div class="card-icon-wrap">
+          <svg viewBox="0 0 22 22" width="22" height="22" fill="none" stroke="#4090FF" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H4a4 4 0 0 0-4 4v2"/><circle cx="8" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M15 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3 class="card-title">COMMUNAUTÉ<br><span class="card-blue">IRON CORE</span></h3>
+        <p class="card-desc">Rejoins une communauté de guerriers déterminés comme toi.</p>
+        <a href="#rejoindre" class="card-cta">REJOINDRE <span>›</span></a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════ STATS ═══════════════════════════ -->
+<section class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-ico">
+      <svg viewBox="0 0 44 44" width="40" height="40" fill="none" stroke="#4090FF" stroke-width="2" stroke-linecap="round"><path d="M8 6v32M36 6v32M4 16h5M35 16h5M4 28h5M35 28h5"/></svg>
+    </div>
+    <div class="stat-text">
+      <p class="stat-num">+10 000</p>
+      <p class="stat-lbl">TRANSFORMATIONS</p>
+    </div>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat-item">
+    <div class="stat-ico">
+      <svg viewBox="0 0 44 44" width="40" height="40" fill="none" stroke="#4090FF" stroke-width="2" stroke-linecap="round"><polygon points="22 3 28.2 16.1 42.8 18.2 32.4 28.3 34.8 42.9 22 36.4 9.2 42.9 11.6 28.3 1.2 18.2 15.8 16.1 22 3"/></svg>
+    </div>
+    <div class="stat-text">
+      <p class="stat-num">+50</p>
+      <p class="stat-lbl">PROGRAMMES</p>
+    </div>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat-item">
+    <div class="stat-ico">
+      <svg viewBox="0 0 44 44" width="40" height="40" fill="none" stroke="#4090FF" stroke-width="2" stroke-linecap="round"><circle cx="22" cy="22" r="18"/><polyline points="22 12 22 22 30 26"/></svg>
+    </div>
+    <div class="stat-text">
+      <p class="stat-num">+7 ANS</p>
+      <p class="stat-lbl">D'EXPÉRIENCE</p>
+    </div>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat-item">
+    <div class="stat-ico">
+      <svg viewBox="0 0 44 44" width="40" height="40" fill="none" stroke="#4090FF" stroke-width="2" stroke-linecap="round"><path d="M30 38v-4a8 8 0 0 0-8-8H10a8 8 0 0 0-8 8v4"/><circle cx="16" cy="14" r="8"/><path d="M44 38v-4a8 8 0 0 0-6-7.74M30 6.26a8 8 0 0 1 0 15.5"/></svg>
+    </div>
+    <div class="stat-text">
+      <p class="stat-num">+20 000</p>
+      <p class="stat-lbl">MEMBRES</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ TICKER ═══════════════════════════ -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span class="tk-blue">Iron Core System™</span><span class="tk-sep">◆</span>
+    <span class="tk-dim">Prise de Masse</span><span class="tk-sep">◆</span>
+    <span class="tk-blue">Sèche Musculaire</span><span class="tk-sep">◆</span>
+    <span class="tk-dim">Nutrition d'Élite</span><span class="tk-sep">◆</span>
+    <span class="tk-blue">Discipline</span><span class="tk-sep">◆</span>
+    <span class="tk-dim">Force Mentale</span><span class="tk-sep">◆</span>
+    <span class="tk-blue">Coaching Premium</span><span class="tk-sep">◆</span>
+    <span class="tk-dim">Forged in Discipline</span><span class="tk-sep">◆</span>
+    <span class="tk-blue">Iron Core System™</span><span class="tk-sep">◆</span>
+    <span class="tk-dim">Prise de Masse</span><span class="tk-sep">◆</span>
+    <span class="tk-blue">Sèche Musculaire</span><span class="tk-sep">◆</span>
+    <span class="tk-dim">Nutrition d'Élite</span><span class="tk-sep">◆</span>
+    <span class="tk-blue">Discipline</span><span class="tk-sep">◆</span>
+    <span class="tk-dim">Force Mentale</span><span class="tk-sep">◆</span>
+    <span class="tk-blue">Coaching Premium</span><span class="tk-sep">◆</span>
+    <span class="tk-dim">Forged in Discipline</span><span class="tk-sep">◆</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ SECTIONS SUPPLÉMENTAIRES ═══════════════════════════ -->
+<section class="extra-section" id="nutrition">
+  <div class="extra-inner">
+    <div class="section-tag">NUTRITION D'ÉLITE</div>
+    <h2 class="section-h2">FUELE TON <span class="blue-g">MOTEUR</span></h2>
+    <p class="section-p">La performance commence dans l'assiette. Nos protocoles nutritionnels sont conçus pour maximiser ta croissance musculaire et ta récupération.</p>
+    <div class="nutri-grid">
+      <div class="nutri-card"><div class="ni"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#4090FF" stroke-width="2"><path d="M12 2C12 2 5 8 5 14a7 7 0 0 0 14 0C19 8 12 2 12 2z"/></svg></div><h4>Prise de Masse</h4><p>Protocoles hypercaloriques pour maximiser la synthèse protéique.</p></div>
+      <div class="nutri-card"><div class="ni"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#4090FF" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M9 12l2 2 4-4"/></svg></div><h4>Sèche Musculaire</h4><p>Plans alimentaires précis pour fondre le gras en préservant le muscle.</p></div>
+      <div class="nutri-card"><div class="ni"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#4090FF" stroke-width="2"><path d="M3 18l5-6 4 4 4-8 5 10"/></svg></div><h4>Performance</h4><p>Timing nutritionnel pour des entraînements explosifs.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="extra-section dark-s" id="blog">
+  <div class="extra-inner">
+    <div class="section-tag">BLOG & CONSEILS</div>
+    <h2 class="section-h2">DERNIERS <span class="blue-g">ARTICLES</span></h2>
     <div class="blog-grid">
-      <article class="blog-card reveal">
-        <div class="blog-img" style="background-image:url('assets/images/warrior1.png')"></div>
-        <div class="blog-body">
-          <div class="blog-cat">ENTRAÎNEMENT</div>
-          <h4>Les 5 exercices fondamentaux pour une masse musculaire maximale</h4>
-          <p>Squats, deadlifts, développé-couché... Ces exercices polyarticulaires sont la base de tout programme sérieux.</p>
-          <a href="#blog" class="blog-link">Lire l'article ›</a>
-        </div>
-      </article>
-      <article class="blog-card reveal">
-        <div class="blog-img" style="background-image:url('assets/images/warrior2.png')"></div>
-        <div class="blog-body">
-          <div class="blog-cat">NUTRITION</div>
-          <h4>Calculer ses macros : le guide complet pour débutants</h4>
-          <p>Protéines, glucides, lipides — comment calculer et ajuster ses macronutriments selon ton objectif.</p>
-          <a href="#blog" class="blog-link">Lire l'article ›</a>
-        </div>
-      </article>
-      <article class="blog-card reveal">
-        <div class="blog-img" style="background-image:url('assets/images/warrior3.png')"></div>
-        <div class="blog-body">
-          <div class="blog-cat">MINDSET</div>
-          <h4>La discipline, seul vrai moteur de la transformation physique</h4>
-          <p>La motivation disparaît. La discipline reste. Comment construire une routine implacable sur le long terme.</p>
-          <a href="#blog" class="blog-link">Lire l'article ›</a>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  <!-- ═══════════════════ CTA ═══════════════════ -->
-  <section class="cta-section reveal" id="rejoindre">
-    <div class="cta-warrior-bg" style="background-image:url('assets/images/warrior3.png')"></div>
-    <div class="cta-overlay"></div>
-    <div class="cta-content">
-      <p class="cta-tag">PRÊT À PASSER AU NIVEAU SUPÉRIEUR ?</p>
-      <h2 class="cta-title">REJOINS <span class="blue-grad">IRON CORE SYSTEM™</span></h2>
-      <p class="cta-desc">Intègre une communauté d'élite. Accède aux programmes, au coaching et aux outils pour forger la meilleure version de toi-même.</p>
-      <div class="cta-buttons">
-        <a href="#contact" class="btn-cta-large">Commencer Maintenant</a>
-        <a href="#programmes" class="btn-ghost">Voir les Programmes</a>
+      <div class="blog-art">
+        <div class="blog-img-wrap"><img src="assets/images/warrior1.png" alt="" class="blog-img"></div>
+        <div class="blog-txt"><span class="blog-tag">ENTRAÎNEMENT</span><h4>Les 5 exercices fondamentaux pour une masse maximale</h4><p>Squats, deadlifts, développé-couché... la base de tout programme sérieux.</p><a href="#" class="blog-lnk">Lire l'article ›</a></div>
+      </div>
+      <div class="blog-art">
+        <div class="blog-img-wrap"><img src="assets/images/warrior2.png" alt="" class="blog-img"></div>
+        <div class="blog-txt"><span class="blog-tag">NUTRITION</span><h4>Calculer ses macros : le guide complet pour débutants</h4><p>Comment calculer et ajuster ses macronutriments selon ton objectif.</p><a href="#" class="blog-lnk">Lire l'article ›</a></div>
+      </div>
+      <div class="blog-art">
+        <div class="blog-img-wrap"><img src="assets/images/warrior3.png" alt="" class="blog-img"></div>
+        <div class="blog-txt"><span class="blog-tag">MINDSET</span><h4>La discipline, seul vrai moteur de la transformation physique</h4><p>La motivation disparaît. La discipline reste. Construis une routine implacable.</p><a href="#" class="blog-lnk">Lire l'article ›</a></div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ═══════════════════ CONTACT ═══════════════════ -->
-  <section class="contact-section" id="contact">
-    <div class="section-label">CONTACT</div>
-    <h2 class="section-title">PARLE-MOI DE <span class="blue-grad">TON OBJECTIF</span></h2>
-    <form class="contact-form" onsubmit="handleSubmit(event)">
-      <div class="form-row">
-        <input type="text" placeholder="Ton prénom" class="form-input" required>
-        <input type="email" placeholder="Ton email" class="form-input" required>
+<section class="cta-section" id="rejoindre">
+  <div class="cta-bg-img" style="background-image:url('assets/images/warrior3.png')"></div>
+  <div class="cta-overlay-dark"></div>
+  <div class="cta-inner">
+    <p class="cta-tag">PRÊT À PASSER AU NIVEAU SUPÉRIEUR ?</p>
+    <h2 class="cta-h2">REJOINS <span class="blue-g">IRON CORE SYSTEM™</span></h2>
+    <p class="cta-p">Intègre une communauté d'élite. Accède aux programmes, au coaching et aux outils pour forger la meilleure version de toi-même.</p>
+    <div class="cta-btns">
+      <a href="#contact" class="btn-cta-main">COMMENCER MAINTENANT</a>
+      <a href="#programmes" class="btn-cta-ghost">VOIR LES PROGRAMMES</a>
+    </div>
+  </div>
+</section>
+
+<section class="extra-section" id="contact">
+  <div class="extra-inner">
+    <div class="section-tag">CONTACT</div>
+    <h2 class="section-h2">PARLE-MOI DE <span class="blue-g">TON OBJECTIF</span></h2>
+    <form class="cform" onsubmit="handleSubmit(event)">
+      <div class="cform-row">
+        <input type="text" placeholder="Ton prénom" class="cinput" required>
+        <input type="email" placeholder="Ton email" class="cinput" required>
       </div>
-      <select class="form-input form-select">
-        <option value="" disabled selected>Ton objectif</option>
-        <option>Prise de masse</option>
-        <option>Sèche musculaire</option>
-        <option>Remise en forme</option>
-        <option>Coaching personnalisé</option>
-      </select>
-      <textarea class="form-input form-textarea" placeholder="Dis-moi où tu en es et où tu veux aller..." rows="4"></textarea>
-      <button type="submit" class="btn-submit">Envoyer le Message ›</button>
+      <select class="cinput"><option value="" disabled selected>Ton objectif</option><option>Prise de masse</option><option>Sèche musculaire</option><option>Remise en forme</option><option>Coaching personnalisé</option></select>
+      <textarea class="cinput ctextarea" placeholder="Dis-moi où tu en es et où tu veux aller..." rows="4"></textarea>
+      <button type="submit" class="btn-submit">ENVOYER LE MESSAGE ›</button>
     </form>
-  </section>
+  </div>
+</section>
 
-  <!-- ═══════════════════ FOOTER ═══════════════════ -->
-  <footer class="footer">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <svg width="48" height="48" viewBox="0 0 200 200" fill="none">
-          <defs>
-            <radialGradient id="fbg" cx="38%" cy="32%" r="62%"><stop offset="0%" stop-color="#F4F5F8"/><stop offset="100%" stop-color="#C6CACF"/></radialGradient>
-            <linearGradient id="fbar" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#0D0D0D"/><stop offset="50%" stop-color="#4090FF"/><stop offset="100%" stop-color="#0D0D0D"/></linearGradient>
-            <linearGradient id="fcore" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#60A8FF"/><stop offset="100%" stop-color="#0A2A6A"/></linearGradient>
-          </defs>
-          <circle cx="100" cy="100" r="96" fill="url(#fbg)"/>
-          <circle cx="100" cy="100" r="94" stroke="#0D0D0D" stroke-width="6" fill="none"/>
-          <rect x="4" y="97" width="192" height="6" fill="url(#fbar)" rx="1"/>
-          <rect x="5" y="76" width="14" height="48" rx="2" fill="url(#fcore)"/>
-          <rect x="181" y="76" width="14" height="48" rx="2" fill="url(#fcore)"/>
-          <text x="100" y="81" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="900" font-size="28" letter-spacing="4" fill="#0D0D0D">IRON</text>
-          <text x="100" y="122" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="900" font-size="44" letter-spacing="2" fill="url(#fcore)">CORE</text>
-          <text x="100" y="149" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="700" font-size="20" letter-spacing="3" fill="#111">SYSTEM™</text>
-        </svg>
-        <p class="footer-tagline">Forged in Discipline</p>
-      </div>
-      <div class="footer-links">
-        <div class="footer-col">
-          <p class="footer-col-title">Navigation</p>
-          <a href="#accueil">Accueil</a><a href="#propos">À Propos</a>
-          <a href="#programmes">Programmes</a><a href="#coaching">Coaching</a>
-        </div>
-        <div class="footer-col">
-          <p class="footer-col-title">Contenu</p>
-          <a href="#ebooks">Ebooks</a><a href="#nutrition">Nutrition</a>
-          <a href="#blog">Blog</a><a href="#contact">Contact</a>
-        </div>
-        <div class="footer-col">
-          <p class="footer-col-title">Rejoindre</p>
-          <a href="#rejoindre">Démarrer</a><a href="#coaching">Coaching 1:1</a>
-          <a href="#programmes">Programmes</a><a href="#contact">Me Contacter</a>
-        </div>
-      </div>
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <svg width="44" height="44" viewBox="0 0 200 200" fill="none"><defs><radialGradient id="fl" cx="38%" cy="32%" r="62%"><stop offset="0%" stop-color="#F4F5F8"/><stop offset="100%" stop-color="#C6CACF"/></radialGradient><linearGradient id="fb" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#0D0D0D"/><stop offset="50%" stop-color="#4090FF"/><stop offset="100%" stop-color="#0D0D0D"/></linearGradient><linearGradient id="fc" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#60A8FF"/><stop offset="100%" stop-color="#1040A0"/></linearGradient></defs><circle cx="100" cy="100" r="96" fill="url(#fl)"/><circle cx="100" cy="100" r="94" stroke="#111" stroke-width="6" fill="none"/><rect x="4" y="97" width="192" height="6" fill="url(#fb)" rx="1"/><rect x="5" y="76" width="13" height="48" rx="2" fill="url(#fc)"/><rect x="182" y="76" width="13" height="48" rx="2" fill="url(#fc)"/><text x="100" y="80" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="900" font-size="28" letter-spacing="4" fill="#0D0D0D">IRON</text><text x="100" y="121" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="900" font-size="44" letter-spacing="2" fill="url(#fc)">CORE</text><text x="100" y="149" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="700" font-size="20" letter-spacing="3" fill="#111">SYSTEM™</text></svg>
+      <p class="footer-motto">Forged in Discipline</p>
     </div>
-    <div class="footer-bottom">
-      <p>© 2026 IRON CORE SYSTEM™ — Tous droits réservés</p>
-      <p class="footer-motto">DISCIPLINE · PUISSANCE · TRANSMISSION</p>
+    <div class="footer-cols">
+      <div class="fcol"><p class="fcol-ttl">Navigation</p><a href="#accueil">Accueil</a><a href="#propos">À Propos</a><a href="#programmes">Programmes</a><a href="#coaching">Coaching</a></div>
+      <div class="fcol"><p class="fcol-ttl">Contenu</p><a href="#ebooks">Ebooks</a><a href="#nutrition">Nutrition</a><a href="#blog">Blog</a><a href="#contact">Contact</a></div>
+      <div class="fcol"><p class="fcol-ttl">Rejoindre</p><a href="#rejoindre">Démarrer</a><a href="#coaching">Coaching 1:1</a><a href="#programmes">Programmes</a><a href="#contact">Me Contacter</a></div>
     </div>
-  </footer>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 IRON CORE SYSTEM™ — Tous droits réservés</p>
+    <p class="footer-tagline-bot">DISCIPLINE · PUISSANCE · TRANSMISSION</p>
+  </div>
+</footer>
 
-  <script src="js/main.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>
